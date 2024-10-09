@@ -1,0 +1,128 @@
+/* LoginPage.css */
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .login-left {
+    width: 50%;
+    background-image: url('../assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 350px;
+    height: auto;
+  }
+  
+  .login-right {
+    width: 50%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 40px;
+  }
+  
+  h2 {
+    margin-bottom: 10px;
+    font-size: 32px;
+  }
+  
+  p {
+    margin-bottom: 30px;
+    font-size: 18px;
+    color: #6c757d;
+  }
+  
+  .login-form {
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input-group {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 15px 15px 15px 50px;
+    font-size: 18px;
+    border: 1px solid #ced4da;
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .input-group label {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #6c757d;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  
+  .input-group input:focus + label,
+  .input-group input:not(:placeholder-shown) + label {
+    top: 8px; /* Se mueve ligeramente hacia arriba, pero se queda en el borde */
+    left: 15px; /* Alineado con el borde del input */
+    font-size: 14px; /* Ajuste del tamaño del label */
+    color: #007bff;
+    background-color: white; /* Fondo blanco para que no se mezcle con el borde */
+    padding: 0 5px; /* Añade un pequeño padding para que no toque los bordes */
+  }
+  
+  .input-group svg {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    fill: #6c757d;
+  }
+  
+  .login-button {
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .register-link {
+    margin-top: 20px;
+  }
+  
+  .register-link a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+  
