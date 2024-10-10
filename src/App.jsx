@@ -1,11 +1,12 @@
-import React from 'react';
-import LoginPage from '../src/pages/LoginPage';
+// Importaciones de Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+import AppRouter from "./router/AppRouter"
 
 function App() {
   return (
-    <div>
-      <LoginPage />
-    </div>
+    <AppRouter />
   );
 }
 
