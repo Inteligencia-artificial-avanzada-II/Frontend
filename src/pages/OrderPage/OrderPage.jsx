@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import styles from '../../styles/styles-orderpage.module.scss';
+import { useEffect, useState } from "react";
+import styles from "../../styles/styles-orderpage.module.scss";
 
 const OrderPage = () => {
   const [productos, setProductos] = useState([]); // Estado para los productos
@@ -8,7 +8,7 @@ const OrderPage = () => {
 
   // Cargar los productos desde el archivo JSON
   useEffect(() => {
-    fetch('/data/products.json') // Asegúrate de que esté en la carpeta 'public'
+    fetch("/data/products.json") // Asegúrate de que esté en la carpeta 'public'
       .then((response) => response.json())
       .then((data) => setProductos(data));
   }, []);
@@ -27,7 +27,10 @@ const OrderPage = () => {
       });
       setSelectedProducts(updatedOrder);
     } else {
-      setSelectedProducts([...selectedProducts, { ...producto, cantidadAgregada: 1 }]);
+      setSelectedProducts([
+        ...selectedProducts,
+        { ...producto, cantidadAgregada: 1 },
+      ]);
     }
   };
 
@@ -51,11 +54,16 @@ const OrderPage = () => {
   return (
     <div className={`container-fluid ${styles.container}`}>
       <div className="row">
-
         {/* Contenido principal */}
-        <section className={`col-${orderVisible ? '10' : '12'} ${styles.mainContent}`}>
+        <section
+          className={`col-${orderVisible ? "10" : "12"} ${styles.mainContent}`}
+        >
           <div className={`${styles.searchBar} d-flex mb-4`}>
-            <input type="text" className="form-control" placeholder="Search..." />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search..."
+            />
             <i className="fas fa-search ms-2"></i>
           </div>
 
@@ -66,10 +74,17 @@ const OrderPage = () => {
                 <div className={`card ${styles.productCard}`}>
                   <div className="card-body">
                     <h5 className="card-title">{producto.nombre}</h5>
-                    <img className="img-fluid" src={producto.imagen} alt={producto.nombre} />
+                    <img
+                      className="img-fluid"
+                      src={producto.imagen}
+                      alt={producto.nombre}
+                    />
                     <p className="card-text">{producto.descripcion}</p>
                     <p className="card-text">{producto.cantidad}</p>
-                    <button className="btn btn-primary" onClick={() => handleAddToOrder(producto)}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleAddToOrder(producto)}
+                    >
                       Agregar
                     </button>
                   </div>
@@ -86,7 +101,11 @@ const OrderPage = () => {
             <div className={`${styles.orderList}`}>
               {selectedProducts.map((product) => (
                 <div key={product.id} className={styles.orderProduct}>
-                  <img className="img-fluid" src={product.imagen} alt={product.nombre} />
+                  <img
+                    className="img-fluid"
+                    src={product.imagen}
+                    alt={product.nombre}
+                  />
                   <div className={styles.orderProductInfo}>
                     <p>{product.nombre}</p>
                     <p className="cantidad">Cantidad: </p>
@@ -95,7 +114,12 @@ const OrderPage = () => {
                       min="1"
                       className="form-control"
                       value={product.cantidadAgregada}
-                      onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          product.id,
+                          parseInt(e.target.value)
+                        )
+                      }
                     />
                   </div>
                 </div>
@@ -104,14 +128,11 @@ const OrderPage = () => {
 
             {/* Botones de acción */}
             <div className={styles.btnGroup}>
-            <button className="btn btn-secondary" onClick={handleCancelOrder}>
+              <button className="btn btn-secondary" onClick={handleCancelOrder}>
                 Cancelar
-            </button>
-            <button className="btn btn-primary">
-                Finalizar
-            </button>
+              </button>
+              <button className="btn btn-primary">Continuar</button>
             </div>
-
           </aside>
         )}
       </div>
