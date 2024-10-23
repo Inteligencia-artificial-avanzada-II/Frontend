@@ -1,0 +1,47 @@
+@import "./styles-colors.scss";
+
+.sidebar {
+    width: 100%;
+    height: 100vh;
+    background-color: #f8f9fa;
+    box-shadow: 3px 0 5px rgba(0, 0, 0, 0.2);
+
+    .logoContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logoBimbo {
+        width: 8rem;
+    }
+
+    .navLinkContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; // Distribuye los enlaces
+        height: 100vh; // O ocupa el 100% del alto de la ventana
+
+        .navItem {
+            flex-grow: 1; // Hace que cada elemento se expanda para ocupar el espacio disponible
+            display: flex;
+            align-items: center; // Centra el texto verticalmente dentro de cada enlace
+            justify-content: center; // Centra el texto horizontalmente dentro de cada enlace
+        }
+
+        .navLink {
+            padding: 0.75rem 1rem;
+            color: $colorNegroLetra;
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+
+            &:hover {
+                background-color: $colorAzulHover;
+                color: $colorBlanco;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    @media (min-width: 768px) {}
+
+}

@@ -9,10 +9,13 @@ import '@fontsource/urbanist/700.css'; // Estilo bold 700
 
 
 import AppRouter from "./router/AppRouter"
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   return (
-    <AppRouter />
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
   );
 }
 
