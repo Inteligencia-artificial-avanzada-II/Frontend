@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import LoginPage from "../pages/LoginPage"
+import OrderPage from "../pages/OrderPage/OrderPage";
 
 const AppRouter = () => {
   return (
@@ -13,6 +14,8 @@ const AppRouter = () => {
     <main className="container-fluid">
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/order" element={<OrderPage />} />
+
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

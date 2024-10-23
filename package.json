@@ -10,12 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/urbanist": "^5.1.0",
+    "@fortawesome/fontawesome-free": "^6.6.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "boxicons": "^2.1.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
+    "sass": "^1.80.3",
     "sass-embedded": "^1.79.4"
   },
   "devDependencies": {

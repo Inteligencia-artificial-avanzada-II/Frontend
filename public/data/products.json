@@ -1,0 +1,83 @@
+[
+    {
+      "id": 1,
+      "nombre": "Mantecadas Mármol",
+      "cantidad": "1 tarima",
+      "descripcion": "Deliciosas mantecadas con sabor a mármol, esponjosas y suaves.",
+      "imagen": "/src/assets/mantecadas.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 2,
+      "nombre": "Donas Azucaradas",
+      "cantidad": "2 tarimas",
+      "descripcion": "Donas suaves con una capa de azúcar que las hace irresistibles.",
+      "imagen": "/src/assets/donas.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 3,
+      "nombre": "Pan Blanco",
+      "cantidad": "3 tarimas",
+      "descripcion": "Pan blanco ideal para sándwiches o tostadas, siempre fresco.",
+      "imagen": "/src/assets/panblanco.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 4,
+      "nombre": "Pan Integral",
+      "cantidad": "2 tarimas",
+      "descripcion": "Pan integral rico en fibra, perfecto para una alimentación balanceada.",
+      "imagen": "/src/assets/panintegral.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 5,
+      "nombre": "Nito",
+      "cantidad": "1 tarima",
+      "descripcion": "Pastelito relleno de crema con cobertura de chocolate, un clásico irresistible.",
+      "imagen": "/src/assets/nito.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 6,
+      "nombre": "Gansito",
+      "cantidad": "2 tarimas",
+      "descripcion": "Pastelito relleno de fresa y crema, cubierto de chocolate con chispas de coco.",
+      "imagen": "/src/assets/gansito.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 7,
+      "nombre": "Roles de Canela",
+      "cantidad": "1 tarima",
+      "descripcion": "Roles de canela con glaseado dulce, perfectos para cualquier momento.",
+      "imagen": "/src/assets/rolescanela.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 8,
+      "nombre": "Barritas Fresa",
+      "cantidad": "3 tarimas",
+      "descripcion": "Barritas rellenas de fresa, el snack perfecto para llevar.",
+      "imagen": "/src/assets/barritas.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 9,
+      "nombre": "Tortillinas",
+      "cantidad": "4 tarimas",
+      "descripcion": "Tortillas suaves ideales para tacos, quesadillas o burritos.",
+      "imagen": "/src/assets/tortillinas.PNG",
+      "cantidadAgregada": 0
+    },
+    {
+      "id": 10,
+      "nombre": "Pingüinos",
+      "cantidad": "2 tarimas",
+      "descripcion": "Pastelitos rellenos de crema con cobertura de chocolate, una tradición en cada bocado.",
+      "imagen": "/src/assets/pinguinos.PNG",
+      "cantidadAgregada": 0
+    }
+  ]
+  
