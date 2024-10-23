@@ -2,7 +2,7 @@
 
 .menuButton {
     position: fixed;
-    top: 10px;
+    top: 0px;
     right: 10px;
     z-index: 1050;
     color: $colorNegroLetra !important;
@@ -32,4 +32,5 @@
 
 .backgroundDashboard {
     background-color: $colorGrisBackground;
+    padding-top: 1rem;
 }

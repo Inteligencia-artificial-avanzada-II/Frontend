@@ -1,2 +1,98 @@
 @import "../styles/styles-colors.scss";
 
+.camionesEstatusCard {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: #f8f9fa; // Fondo claro
+    border-radius: 15px; // Bordes redondeados
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Sombra ligera
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+
+    &:hover {
+        transform: scale(1.05); // Efecto de hover que agranda la tarjeta
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); // Mayor sombra en hover
+    }
+
+    .icon {
+        width: 50px;
+        height: 50px;
+        background-color: #e0f7fa; // Fondo del ícono por defecto
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #6c757d; // Color del texto
+    }
+
+    .number {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #343a40; // Color del número
+    }
+}
+
+.camionesEnTransito .icon {
+    background-color: #5de0e6; // Color para "Camiones en tránsito"
+}
+
+.camionesEnPatio .icon {
+    background-color: #f8c6d4; // Color para "Camiones en patio"
+}
+
+.camionesEnDescarga .icon {
+    background-color: #80c1ff; // Color para "Camiones en descarga"
+}
+
+.containerPrioridadModelo {
+    padding: 0.5rem;
+
+    .listaOrdenCamiones {
+        background-color: #f8f9fa; // Fondo claro
+        border-radius: 15px; // Bordes redondeados
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Sombra suave
+        height: 37rem;
+        overflow-y: scroll;
+
+        .itemCamion {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff; // Fondo para cada ítem
+            border-radius: 10px;
+            padding: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Sombra para cada ítem
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+            &:hover {
+                transform: scale(1.02); // Efecto de hover
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+
+            .numeroCamion {
+                background-color: #004aad; // Fondo azul del número
+                color: #fff;
+                font-size: 1rem;
+                font-weight: bold;
+                border-radius: 10px;
+                text-align: center;
+                padding: 0.5rem;
+            }
+
+            .puertaCamion {
+                font-size: 0.9rem;
+                color: #6c757d;
+                text-align: right;
+                flex-shrink: 0;
+            }
+        }
+    }
+}

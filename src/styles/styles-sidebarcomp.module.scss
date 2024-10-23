@@ -22,6 +22,14 @@
         justify-content: space-between; // Distribuye los enlaces
         height: 100vh; // O ocupa el 100% del alto de la ventana
 
+        .ulContainer {
+            height: auto;
+
+            @media (min-width: 768px) {
+                height: 50%;
+            }
+        }
+
         .navItem {
             flex-grow: 1; // Hace que cada elemento se expanda para ocupar el espacio disponible
             display: flex;

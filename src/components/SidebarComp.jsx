@@ -10,7 +10,7 @@ const SidebarComp = () => {
                 <img src={bimboLogo} className={`img-fluid ${styles.logoBimbo}`} alt="Bimbo" />
             </div>
             <div className={`h-100 ${styles.navLinkContainer}`}>
-                <ul className="nav d-flex flex-column h-50">
+                <ul className={`nav d-flex flex-column ${styles.ulContainer}`}>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
                         <NavLink to="/home" className={`nav-link w-100 ${styles.navLink}`} activeClassName={styles.active}>
                             Dashboard
@@ -18,17 +18,17 @@ const SidebarComp = () => {
                     </li>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
                         <NavLink to="/about" className={`nav-link w-100 ${styles.navLink}`} activeClassName={styles.active}>
-                            About
+                            Modelo
                         </NavLink>
                     </li>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
                         <NavLink to="/services" className={`nav-link w-100 ${styles.navLink}`} activeClassName={styles.active}>
-                            Services
+                            Histórico
                         </NavLink>
                     </li>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
                         <NavLink to="/contact" className={`nav-link w-100 ${styles.navLink}`} activeClassName={styles.active}>
-                            Contact
+                            Reportes
                         </NavLink>
                     </li>
                 </ul>

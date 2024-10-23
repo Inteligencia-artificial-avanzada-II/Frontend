@@ -61,7 +61,7 @@ const AppRouter = () => {
           ) : null}
 
           {/* Contenido principal */}
-          <main className={`${isAuthenticated ? `col-12 col-md-9 col-lg-10 ${styles.backgroundDashboard}` : 'col-12'}`}>
+          <main className={`${isAuthenticated ? `mt-5 mt-md-0 col-12 col-md-9 col-lg-10 ${styles.backgroundDashboard}` : 'col-12'}`}>
             <Routes>
               {/* Ruta pública: Página de Login */}
               <Route path="/" element={
