@@ -19,8 +19,8 @@
     .navLinkContainer {
         display: flex;
         flex-direction: column;
-        justify-content: space-between; // Distribuye los enlaces
-        height: 100vh; // O ocupa el 100% del alto de la ventana
+        justify-content: space-between;
+        height: 100vh;
 
         .ulContainer {
             height: auto;
@@ -31,10 +31,10 @@
         }
 
         .navItem {
-            flex-grow: 1; // Hace que cada elemento se expanda para ocupar el espacio disponible
+            flex-grow: 1;
             display: flex;
-            align-items: center; // Centra el texto verticalmente dentro de cada enlace
-            justify-content: center; // Centra el texto horizontalmente dentro de cada enlace
+            align-items: center;
+            justify-content: center;
         }
 
         .navLink {
@@ -47,9 +47,14 @@
                 color: $colorBlanco;
                 transform: scale(1.1);
             }
+
+            &.active {
+                background-color: $colorAzulHover; // Color de fondo para el enlace activo
+                color: $colorBlanco; // Color del texto para el enlace activo
+                font-weight: bold;
+            }
         }
     }
 
     @media (min-width: 768px) {}
-
 }

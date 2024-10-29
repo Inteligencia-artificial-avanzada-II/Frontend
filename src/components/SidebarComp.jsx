@@ -12,22 +12,42 @@ const SidebarComp = () => {
             <div className={`h-100 ${styles.navLinkContainer}`}>
                 <ul className={`nav d-flex flex-column ${styles.ulContainer}`}>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
-                        <NavLink to="/home" className={`nav-link w-100 ${styles.navLink}`} activeClassName={styles.active}>
+                        <NavLink
+                            to="/home"
+                            className={({ isActive }) =>
+                                `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`
+                            }
+                        >
                             Dashboard
                         </NavLink>
                     </li>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
-                        <NavLink to="/about" className={`nav-link w-100 ${styles.navLink}`} activeClassName={styles.active}>
+                        <NavLink
+                            to="/about"
+                            className={({ isActive }) =>
+                                `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`
+                            }
+                        >
                             Modelo
                         </NavLink>
                     </li>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
-                        <NavLink to="/services" className={`nav-link w-100 ${styles.navLink}`} activeClassName={styles.active}>
+                        <NavLink
+                            to="/services"
+                            className={({ isActive }) =>
+                                `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`
+                            }
+                        >
                             Histórico
                         </NavLink>
                     </li>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
-                        <NavLink to="/contact" className={`nav-link w-100 ${styles.navLink}`} activeClassName={styles.active}>
+                        <NavLink
+                            to="/contact"
+                            className={({ isActive }) =>
+                                `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`
+                            }
+                        >
                             Reportes
                         </NavLink>
                     </li>
