@@ -1,0 +1,79 @@
+@import "./styles-colors.scss";
+
+.horizontalScrollContainer {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 1rem;
+
+    &::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+}
+
+.card {
+    display: flex;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+    width: 250px;
+    height: 150px;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        transform: translateY(-4px);
+    }
+}
+
+.cardContent {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 1rem;
+}
+
+.imageContainer {
+    width: 5rem;
+    height: 5rem;
+    margin-right: 1rem;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+}
+
+.infoContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 60%;
+
+    .cardTitle {
+        font-size: 1rem;
+        margin: 0;
+        margin-bottom: 0.5rem;
+        text-align: left;
+    }
+
+    .cardText {
+        font-size: 1rem;
+        color: #6c757d;
+        text-align: left;
+    }
+}

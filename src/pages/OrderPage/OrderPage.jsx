@@ -116,7 +116,7 @@ const OrderPage = () => {
             )}
           </>
         ) : (
-          <OrderDetailFormComp onBack={() => setIsOrderDetailVisible(false)} />
+          <OrderDetailFormComp selectedProducts={selectedProducts} onBack={() => setIsOrderDetailVisible(false)} />
         )}
       </div>
     </div >
