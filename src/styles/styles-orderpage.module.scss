@@ -5,40 +5,7 @@
     overflow: hidden;
   }
   
-  .sidebar {
-    background-color: #f5f5f5;
-    padding: 20px;
-    height: 100vh;
-    border-right: 2px solid #ececec;
-  }
-  
-  .logo {
-    width: 150px;
-    margin-bottom: 20px;
-  }
-  
-  .userProfile {
-    img {
-      width: 70px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-  
-    p {
-      font-weight: bold;
-      margin: 0;
-      color: #333;
-    }
-  
-    span {
-      font-size: 12px;
-      color: #999;
-    }
-  }
-  
   .mainContent {
-    padding: 20px;
     background-color: $colorGrisBackground;
     height: 100vh; // Ocupa toda la altura
     overflow-y: auto; // Activa el scroll vertical
@@ -100,7 +67,6 @@
   
   .orderCart {
     border-left: 1px solid #ececec;
-    padding: 20px;
     background-color: #fff;
     position: relative;
     height: 100vh; // Ocupa toda la altura disponible

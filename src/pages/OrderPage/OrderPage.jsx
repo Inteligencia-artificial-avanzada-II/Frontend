@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import styles from "../../styles/styles-orderpage.module.scss";
+import OrderDetailFormComp from "../../components/OrderDetailFormComp";
 
 const OrderPage = () => {
   const [productos, setProductos] = useState([]); // Estado para los productos
   const [orderVisible, setOrderVisible] = useState(false); // Estado para mostrar/ocultar la orden
   const [selectedProducts, setSelectedProducts] = useState([]); // Productos seleccionados en el carrito
+  const [isOrderDetailVisible, setIsOrderDetailVisible] = useState(false);
 
   // Cargar los productos desde el archivo JSON
   useEffect(() => {
@@ -51,92 +53,73 @@ const OrderPage = () => {
     setOrderVisible(false); // Oculta el carrito al cancelar la orden
   };
 
+  const handleContinueOrder = () => {
+    setIsOrderDetailVisible(true);
+  };
+
   return (
     <div className={`container-fluid ${styles.container}`}>
       <div className="row">
-        {/* Contenido principal */}
-        <section
-          className={`col-${orderVisible ? "10" : "12"} ${styles.mainContent}`}
-        >
-          <div className={`${styles.searchBar} d-flex mb-4`}>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search..."
-            />
-            <i className="fas fa-search ms-2"></i>
-          </div>
-
-          {/* Lista de productos */}
-          <div className="row">
-            {productos.map((producto) => (
-              <div className="col-12 col-md-6 col-lg-4 mb-4" key={producto.id}>
-                <div className={`card ${styles.productCard}`}>
-                  <div className="card-body">
-                    <h5 className="card-title">{producto.nombre}</h5>
-                    <img
-                      className="img-fluid"
-                      src={producto.imagen}
-                      alt={producto.nombre}
-                    />
-                    <p className="card-text">{producto.descripcion}</p>
-                    <p className="card-text">{producto.cantidad}</p>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleAddToOrder(producto)}
-                    >
-                      Agregar
-                    </button>
-                  </div>
-                </div>
+        {!isOrderDetailVisible ? (
+          <>
+            <section className={`col-${orderVisible ? "10" : "12"} ${styles.mainContent}`}>
+              <div className={`${styles.searchBar} d-flex mb-4`}>
+                <input type="text" className="form-control" placeholder="Search..." />
+                <i className="fas fa-search ms-2"></i>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Carrito de orden */}
-        {orderVisible && (
-          <aside className={`col-2 bg-white p-3 ${styles.orderCart}`}>
-            <h5 className="text-danger">ORDER</h5>
-            <div className={`${styles.orderList}`}>
-              {selectedProducts.map((product) => (
-                <div key={product.id} className={styles.orderProduct}>
-                  <img
-                    className="img-fluid"
-                    src={product.imagen}
-                    alt={product.nombre}
-                  />
-                  <div className={styles.orderProductInfo}>
-                    <p>{product.nombre}</p>
-                    <p className="cantidad">Cantidad: </p>
-                    <input
-                      type="number"
-                      min="1"
-                      className="form-control"
-                      value={product.cantidadAgregada}
-                      onChange={(e) =>
-                        handleQuantityChange(
-                          product.id,
-                          parseInt(e.target.value)
-                        )
-                      }
-                    />
+              <div className="row">
+                {productos.map((producto) => (
+                  <div className="col-12 col-md-6 col-lg-4 mb-4" key={producto.id}>
+                    <div className={`card ${styles.productCard}`}>
+                      <div className="card-body">
+                        <h5 className="card-title">{producto.nombre}</h5>
+                        <img className="img-fluid" src={producto.imagen} alt={producto.nombre} />
+                        <p className="card-text">{producto.descripcion}</p>
+                        <button className="btn btn-primary" onClick={() => handleAddToOrder(producto)}>
+                          Agregar
+                        </button>
+                      </div>
+                    </div>
                   </div>
+                ))}
+              </div>
+            </section>
+            {orderVisible && (
+              <aside className={`col-2 bg-white p-2 ${styles.orderCart}`}>
+                <h5 className="text-danger">ORDER</h5>
+                <div className={`${styles.orderList}`}>
+                  {selectedProducts.map((product) => (
+                    <div key={product.id} className={styles.orderProduct}>
+                      <img className="img-fluid" src={product.imagen} alt={product.nombre} />
+                      <div className={styles.orderProductInfo}>
+                        <p>{product.nombre}</p>
+                        <input
+                          type="number"
+                          min="1"
+                          className="form-control"
+                          value={product.cantidadAgregada}
+                          onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-
-            {/* Botones de acción */}
-            <div className={styles.btnGroup}>
-              <button className="btn btn-secondary" onClick={handleCancelOrder}>
-                Cancelar
-              </button>
-              <button className="btn btn-primary">Continuar</button>
-            </div>
-          </aside>
+                <div className={styles.btnGroup}>
+                  <button className="btn btn-secondary" onClick={handleCancelOrder}>
+                    Cancelar
+                  </button>
+                  <button className="btn btn-primary" onClick={handleContinueOrder}>
+                    Continuar
+                  </button>
+                </div>
+              </aside>
+            )}
+          </>
+        ) : (
+          <OrderDetailFormComp onBack={() => setIsOrderDetailVisible(false)} />
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
