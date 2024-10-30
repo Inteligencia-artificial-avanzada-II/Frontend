@@ -3,22 +3,19 @@ import styles from "../../styles/styles-orderpage.module.scss";
 import OrderDetailFormComp from "../../components/OrderDetailFormComp";
 
 const OrderPage = () => {
-  const [productos, setProductos] = useState([]); // Estado para los productos
-  const [orderVisible, setOrderVisible] = useState(false); // Estado para mostrar/ocultar la orden
-  const [selectedProducts, setSelectedProducts] = useState([]); // Productos seleccionados en el carrito
+  const [productos, setProductos] = useState([]);
+  const [orderVisible, setOrderVisible] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [isOrderDetailVisible, setIsOrderDetailVisible] = useState(false);
 
-  // Cargar los productos desde el archivo JSON
   useEffect(() => {
-    fetch("/data/products.json") // Asegúrate de que esté en la carpeta 'public'
+    fetch("/data/products.json")
       .then((response) => response.json())
       .then((data) => setProductos(data));
   }, []);
 
-  // Manejar la adición de productos al carrito
   const handleAddToOrder = (producto) => {
-    setOrderVisible(true); // Muestra el carrito de la orden si se añade un producto
-
+    setOrderVisible(true);
     const productInOrder = selectedProducts.find((p) => p.id === producto.id);
     if (productInOrder) {
       const updatedOrder = selectedProducts.map((p) => {
@@ -29,14 +26,10 @@ const OrderPage = () => {
       });
       setSelectedProducts(updatedOrder);
     } else {
-      setSelectedProducts([
-        ...selectedProducts,
-        { ...producto, cantidadAgregada: 1 },
-      ]);
+      setSelectedProducts([...selectedProducts, { ...producto, cantidadAgregada: 1 }]);
     }
   };
 
-  // Actualizar la cantidad de productos en el carrito desde el input
   const handleQuantityChange = (id, cantidad) => {
     const updatedOrder = selectedProducts.map((p) => {
       if (p.id === id) {
@@ -47,10 +40,9 @@ const OrderPage = () => {
     setSelectedProducts(updatedOrder);
   };
 
-  // Manejar el clic en el botón "Cancelar"
   const handleCancelOrder = () => {
     setSelectedProducts([]);
-    setOrderVisible(false); // Oculta el carrito al cancelar la orden
+    setOrderVisible(false);
   };
 
   const handleContinueOrder = () => {
@@ -58,11 +50,11 @@ const OrderPage = () => {
   };
 
   return (
-    <div className={`container-fluid ${styles.container}`}>
+    <div className="container-fluid">
       <div className="row">
         {!isOrderDetailVisible ? (
           <>
-            <section className={`col-${orderVisible ? "10" : "12"} ${styles.mainContent}`}>
+            <section className={`col-12 col-md-${orderVisible ? "9" : "12"} ${styles.mainContent}`}>
               <div className={`${styles.searchBar} d-flex mb-4`}>
                 <input type="text" className="form-control" placeholder="Search..." />
                 <i className="fas fa-search ms-2"></i>
@@ -85,7 +77,7 @@ const OrderPage = () => {
               </div>
             </section>
             {orderVisible && (
-              <aside className={`col-2 bg-white p-2 ${styles.orderCart}`}>
+              <aside className={`col-12 col-md-3 bg-white p-2 ${styles.orderCart}`}>
                 <h5 className="text-danger">ORDER</h5>
                 <div className={`${styles.orderList}`}>
                   {selectedProducts.map((product) => (
@@ -104,11 +96,11 @@ const OrderPage = () => {
                     </div>
                   ))}
                 </div>
-                <div className={styles.btnGroup}>
-                  <button className="btn btn-secondary" onClick={handleCancelOrder}>
+                <div className={`${styles.btnGroup} d-flex justify-content-between mt-3`}>
+                  <button className="btn btn-secondary btn-sm" onClick={handleCancelOrder}>
                     Cancelar
                   </button>
-                  <button className="btn btn-primary" onClick={handleContinueOrder}>
+                  <button className="btn btn-primary btn-sm" onClick={handleContinueOrder}>
                     Continuar
                   </button>
                 </div>
@@ -119,7 +111,7 @@ const OrderPage = () => {
           <OrderDetailFormComp selectedProducts={selectedProducts} onBack={() => setIsOrderDetailVisible(false)} />
         )}
       </div>
-    </div >
+    </div>
   );
 };
 
