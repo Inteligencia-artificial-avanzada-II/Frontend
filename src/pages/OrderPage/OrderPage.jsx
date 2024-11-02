@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import styles from "../../styles/styles-orderpage.module.scss";
 import OrderDetailFormComp from "../../components/OrderDetailFormComp";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 
 const OrderPage = () => {
   const [productos, setProductos] = useState([]);
@@ -15,7 +17,6 @@ const OrderPage = () => {
   }, []);
 
   const handleAddToOrder = (producto) => {
-    setOrderVisible(true);
     const productInOrder = selectedProducts.find((p) => p.id === producto.id);
     if (productInOrder) {
       const updatedOrder = selectedProducts.map((p) => {
@@ -28,6 +29,27 @@ const OrderPage = () => {
     } else {
       setSelectedProducts([...selectedProducts, { ...producto, cantidadAgregada: 1 }]);
     }
+
+    // Muestra el toast de "Producto agregado"
+    Toastify({
+      text: "Producto agregado",
+      duration: 1000,
+      newWindow: true,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true,
+      style: {
+        background: "linear-gradient(to right, 'white', 'blue')",
+        borderRadius: "2rem",
+        textTransform: "uppercase",
+        fontSize: ".75rem"
+      },
+      offset: {
+        x: "1.5rem", // Espaciado horizontal
+        y: "1.5rem" // Espaciado vertical
+      },
+    }).showToast();
   };
 
   const handleQuantityChange = (id, cantidad) => {
@@ -47,6 +69,10 @@ const OrderPage = () => {
 
   const handleContinueOrder = () => {
     setIsOrderDetailVisible(true);
+  };
+
+  const toggleOrderVisibility = () => {
+    setOrderVisible(!orderVisible);
   };
 
   return (
@@ -76,8 +102,12 @@ const OrderPage = () => {
                 ))}
               </div>
             </section>
+
             {orderVisible && (
               <aside className={`col-12 col-md-3 bg-white p-2 ${styles.orderCart}`}>
+                <button className={styles.hideOrderButton} onClick={toggleOrderVisibility}>
+                  ➔
+                </button>
                 <h5 className="text-danger">ORDER</h5>
                 <div className={`${styles.orderList}`}>
                   {selectedProducts.map((product) => (
@@ -96,15 +126,21 @@ const OrderPage = () => {
                     </div>
                   ))}
                 </div>
-                <div className={`${styles.btnGroup} d-flex justify-content-between mt-3`}>
-                  <button className="btn btn-secondary btn-sm" onClick={handleCancelOrder}>
+                <div className={`${styles.btnGroup} d-flex justify-content-center mt-3`}>
+                  <button className="btn btn-secondary me-2" onClick={handleCancelOrder}>
                     Cancelar
                   </button>
-                  <button className="btn btn-primary btn-sm" onClick={handleContinueOrder}>
+                  <button className="btn btn-primary" onClick={handleContinueOrder}>
                     Continuar
                   </button>
                 </div>
               </aside>
+            )}
+
+            {!orderVisible && (
+              <div className={styles.showOrderTab} onClick={toggleOrderVisibility}>
+                <span>⬅</span>
+              </div>
             )}
           </>
         ) : (
