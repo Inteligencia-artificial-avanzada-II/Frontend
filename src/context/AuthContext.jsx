@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   // Función para validar el token
   const validateToken = async (storedToken) => {
     try {
-      const response = await axios.post(`${apiUrlUsuario}/validatoken`, { token: storedToken });
+      const response = await axios.post(`${apiUrlUsuario}/validatoken`, { token: storedToken }, {headers: {Authorization: `Token ${storedToken}`}});
       return response.status === 200;  // Si es 200, el token es válido
     } catch (error) {
       return false; // Token inválido o error en la validación

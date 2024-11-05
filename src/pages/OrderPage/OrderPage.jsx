@@ -30,14 +30,13 @@ const OrderPage = () => {
       setSelectedProducts([...selectedProducts, { ...producto, cantidadAgregada: 1 }]);
     }
 
-    // Muestra el toast de "Producto agregado"
     Toastify({
       text: "Producto agregado",
       duration: 1000,
       newWindow: true,
       close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
+      gravity: "top",
+      position: "right",
       stopOnFocus: true,
       style: {
         background: "linear-gradient(to right, 'white', 'blue')",
@@ -46,8 +45,8 @@ const OrderPage = () => {
         fontSize: ".75rem"
       },
       offset: {
-        x: "1.5rem", // Espaciado horizontal
-        y: "1.5rem" // Espaciado vertical
+        x: "1.5rem",
+        y: "1.5rem"
       },
     }).showToast();
   };
@@ -73,6 +72,12 @@ const OrderPage = () => {
 
   const toggleOrderVisibility = () => {
     setOrderVisible(!orderVisible);
+  };
+
+  // Nueva función para limpiar productos seleccionados
+  const clearSelectedProducts = () => {
+    setSelectedProducts([]);
+    setIsOrderDetailVisible(false);
   };
 
   return (
@@ -144,7 +149,11 @@ const OrderPage = () => {
             )}
           </>
         ) : (
-          <OrderDetailFormComp selectedProducts={selectedProducts} onBack={() => setIsOrderDetailVisible(false)} />
+          <OrderDetailFormComp 
+            selectedProducts={selectedProducts} 
+            onBack={() => setIsOrderDetailVisible(false)} 
+            clearSelectedProducts={clearSelectedProducts} // Pasa la función
+          />
         )}
       </div>
     </div>

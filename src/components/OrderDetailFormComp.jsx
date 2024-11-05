@@ -4,73 +4,134 @@ import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 import styles from "../styles/styles-orderdetailformcomp.module.scss";
+import { getEnvironmentURL } from "../utils/getUrl";
 
-const OrderDetailFormComp = ({ selectedProducts, onBack }) => {
+const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }) => {
     const [orderNumber, setOrderNumber] = useState("");
     const [vehicle, setVehicle] = useState("");
     const [container, setContainer] = useState("");
     const [distributionCenter, setDistributionCenter] = useState("");
+    const [availableVehicles, setAvailableVehicles] = useState([]);
+    const [availableContainers, setAvailableContainers] = useState([]);
+    const [availableCedis, setAvailableCedis] = useState([]);
+    const apiUrlContenedor = `${getEnvironmentURL()}/contenedor`;
+    const apiUrlCamion = `${getEnvironmentURL()}/camion`;
+    const apiUrlCedis = `${getEnvironmentURL()}/cedis`;
+    const apiUrlOrden = `${getEnvironmentURL()}/orden`;
 
-    
+    // Función para obtener el encabezado de autorización
+    const getAuthHeader = () => {
+        const token = localStorage.getItem('token');
+        return { Authorization: `Token ${token}` };
+    };
 
-    const handleSubmit = (e) => {
+    // Cargar vehículos disponibles desde la API
+    useEffect(() => {
+        const fetchAvailableVehicles = async () => {
+            try {
+                const response = await axios.get(`${apiUrlCamion}/disponibles`, {
+                    headers: getAuthHeader(),
+                });
+                setAvailableVehicles(Array.isArray(response.data) ? response.data : []);
+            } catch (error) {
+                console.error("Error al obtener los camiones disponibles:", error);
+                setAvailableVehicles([]);
+            }
+        };
+        fetchAvailableVehicles();
+    }, []);
+
+    // Cargar contenedores disponibles con encabezado de autenticación
+    useEffect(() => {
+        const fetchAvailableContainers = async () => {
+            try {
+                const response = await axios.get(`${apiUrlContenedor}/disponibles`, {
+                    headers: getAuthHeader(),
+                });
+                setAvailableContainers(Array.isArray(response.data) ? response.data : []);
+            } catch (error) {
+                console.error("Error al obtener los contenedores disponibles:", error);
+                setAvailableContainers([]);
+            }
+        };
+        fetchAvailableContainers();
+    }, []);
+
+    // Cargar centros de distribución (CEDIS) desde la API con encabezado de autenticación
+    useEffect(() => {
+        const fetchAvailableCedis = async () => {
+            try {
+                const response = await axios.get(`${apiUrlCedis}/consultarTodos`, {
+                    headers: getAuthHeader(),
+                });
+                setAvailableCedis(Array.isArray(response.data) ? response.data : []);
+            } catch (error) {
+                console.error("Error al obtener los centros de distribución (CEDIS):", error);
+                setAvailableCedis([]);
+            }
+        };
+        fetchAvailableCedis();
+    }, []);
+
+    // Manejar el envío del formulario
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Construir el nombre completo a partir de los datos de userData
-        const createdBy = localStorage.getItem('token')
-        const modifiedBy = createdBy;
+        const createdBy = localStorage.getItem('token');
 
         const jsonFinal = {
             sqlData: {
                 idContenedor: container || "Id del contenedor",
                 idCamion: vehicle || "Id del camion",
-                origen: "Página de pedido",
+                origen: "Fabrica de origen",
                 idCedis: distributionCenter || "Id del cedis",
+                isActive: true,
             },
             mongoData: {
                 orderNumber: orderNumber || "string",
                 createdBy: createdBy,
-                modifiedBy: modifiedBy,
+                modifiedBy: createdBy,
                 creationDate: new Date().toISOString(),
                 products: selectedProducts.map((product) => ({
                     itemCode: product.id?.toString() || "string",
                     itemDescription: product.nombre || "string",
-                    originalOrderQuantity: product.cantidadAgregada || "number",
                     requestedQuantity: product.cantidadAgregada || "number",
-                    assignedQuantity: product.cantidadAgregada || "number",
-                    packedQuantity: product.cantidadAgregada || "number",
-                    orderDetailStatus: "pending",
-                    expirationDateComprobante: new Date().toISOString(),
-                    barcode: `B-${Math.floor(Math.random() * 1000000)}`,
                     salePrice: (Math.random() * 100).toFixed(2),
-                    creationDateDetail: new Date().toISOString(),
-                    alternativeItemCodes: "N/A",
-                    unitOfMeasure: "unit",
                 })),
             },
         };
 
-        console.log("JSON generado:", jsonFinal);
+        try {
+            const response = await axios.post(`${apiUrlOrden}/crear`, jsonFinal, { headers: getAuthHeader() });
+            Toastify({
+                text: "Pedido finalizado",
+                duration: 1000,
+                newWindow: true,
+                close: true,
+                gravity: "top",
+                position: "right",
+                stopOnFocus: true,
+                style: {
+                    background: "linear-gradient(to right, 'white', 'blue')",
+                    borderRadius: "2rem",
+                    textTransform: "uppercase",
+                    fontSize: ".75rem"
+                },
+                offset: {
+                    x: "1.5rem",
+                    y: "1.5rem",
+                },
+            }).showToast();
 
-        Toastify({
-            text: "Pedido finalizado",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "top",
-            position: "right",
-            stopOnFocus: true,
-            style: {
-                background: "linear-gradient(to right, #4b33a8, #96c93d)",
-                borderRadius: "2rem",
-                textTransform: "uppercase",
-                fontSize: ".75rem",
-            },
-            offset: {
-                x: "1.5rem",
-                y: "1.5rem",
-            },
-        }).showToast();
+            console.log(jsonFinal)
+            console.log(response)
+
+            // Limpiar productos seleccionados y regresar a OrderPage
+            setTimeout(() => {
+                clearSelectedProducts();
+            }, 1000);
+        } catch (error) {
+            console.error("Error al enviar el pedido:", error);
+        }
     };
 
     return (
@@ -118,9 +179,11 @@ const OrderDetailFormComp = ({ selectedProducts, onBack }) => {
                         required
                     >
                         <option value="">Seleccione un vehículo</option>
-                        <option value="vehiculo1">Camión de Carga 1</option>
-                        <option value="vehiculo2">Camión de Carga 2</option>
-                        <option value="vehiculo3">Camión Refrigerado</option>
+                        {availableVehicles.map((veh) => (
+                            <option key={veh.idCamion} value={veh.idCamion}>
+                                {veh.modelo} - {veh.placas}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -134,9 +197,11 @@ const OrderDetailFormComp = ({ selectedProducts, onBack }) => {
                         required
                     >
                         <option value="">Seleccione un contenedor</option>
-                        <option value="contenedor1">Contenedor Estándar</option>
-                        <option value="contenedor2">Contenedor Refrigerado</option>
-                        <option value="contenedor3">Contenedor de Carga Pesada</option>
+                        {availableContainers.map((cont) => (
+                            <option key={cont.idContenedor} value={cont.idContenedor}>
+                                {cont.tipo} - {cont.capacidad}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -150,10 +215,11 @@ const OrderDetailFormComp = ({ selectedProducts, onBack }) => {
                         required
                     >
                         <option value="">Seleccione un centro de distribución</option>
-                        <option value="centro1">Centro de Distribución Norte</option>
-                        <option value="centro2">Centro de Distribución Sur</option>
-                        <option value="centro3">Centro de Distribución Este</option>
-                        <option value="centro4">Centro de Distribución Oeste</option>
+                        {availableCedis.map((cedis) => (
+                            <option key={cedis.idCedis} value={cedis.idCedis}>
+                                {cedis.name} - {cedis.address}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -174,6 +240,7 @@ OrderDetailFormComp.propTypes = {
         })
     ).isRequired,
     onBack: PropTypes.func.isRequired,
+    clearSelectedProducts: PropTypes.func.isRequired,
 };
 
 export default OrderDetailFormComp;
