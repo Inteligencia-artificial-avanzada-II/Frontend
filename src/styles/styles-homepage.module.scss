@@ -95,4 +95,114 @@
             }
         }
     }
+
+    .modeloPrioridad {
+        .opciones {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .boton {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid $colorAzulHover; // Usa el color principal de tu archivo de colores
+            border-radius: 8px;
+            background-color: transparent;
+            color: $colorNegroLetra; // Color principal para el texto
+            transition: background-color 0.3s ease, color 0.3s ease;
+
+            &:hover {
+                background-color: mix($colorBlanco, $colorAzulHover, 40%);
+                color: mix(black, $colorAzulHover, 10%);
+            }
+        }
+
+        .activo {
+            background-color: $colorAzulHover; // Color de fondo para el botón activo
+            color: $colorBlanco; // Color de texto para el botón activo
+        }
+
+        .cargarArchivo {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .botonArchivo {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            color: $colorBlanco;
+            background-color: $colorGris;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 0.5rem;
+
+            &:hover {
+                background-color: mix($colorBlanco, $colorGris, 15%);
+            }
+
+            input[type="file"] {
+                display: none; // Oculta el input de archivo real
+            }
+        }
+
+        .mensajeExito {
+            color: green;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .titulo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #004aad; // Color principal
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .lista {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-height: 27rem;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .item {
+            padding: 0.8rem 1rem;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.2s ease;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:hover {
+                background-color: #e6f7ff;
+            }
+        }
+
+        .prioridad {
+            font-weight: bold;
+            color: #45a29e; // Color para el texto de prioridad
+            margin-bottom: 0.3rem;
+        }
+
+        .detalle {
+            color: #343a40;
+            font-size: 0.9rem;
+        }
+    }
 }

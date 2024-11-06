@@ -23,17 +23,7 @@ const SidebarComp = () => {
                     </li>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
                         <NavLink
-                            to="/about"
-                            className={({ isActive }) =>
-                                `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`
-                            }
-                        >
-                            Modelo
-                        </NavLink>
-                    </li>
-                    <li className={`nav-item d-flex ${styles.navItem}`}>
-                        <NavLink
-                            to="/services"
+                            to="/historico"
                             className={({ isActive }) =>
                                 `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`
                             }
@@ -43,7 +33,7 @@ const SidebarComp = () => {
                     </li>
                     <li className={`nav-item d-flex ${styles.navItem}`}>
                         <NavLink
-                            to="/contact"
+                            to="/reportes"
                             className={({ isActive }) =>
                                 `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`
                             }

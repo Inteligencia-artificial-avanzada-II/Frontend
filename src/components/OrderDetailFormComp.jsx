@@ -8,6 +8,8 @@ import { getEnvironmentURL } from "../utils/getUrl";
 
 const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }) => {
     const [orderNumber, setOrderNumber] = useState("");
+    const [origenPedido, setOrigenPedido] = useState("");
+    const [fechaSalida, setFechaSalida] = useState("");
     const [vehicle, setVehicle] = useState("");
     const [container, setContainer] = useState("");
     const [distributionCenter, setDistributionCenter] = useState("");
@@ -82,15 +84,17 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
             sqlData: {
                 idContenedor: container || "Id del contenedor",
                 idCamion: vehicle || "Id del camion",
-                origen: "Fabrica de origen",
+                origen: origenPedido || "Fabrica de origen",
                 idCedis: distributionCenter || "Id del cedis",
                 isActive: true,
+                localization: "En transito"
             },
             mongoData: {
                 orderNumber: orderNumber || "string",
                 createdBy: createdBy,
                 modifiedBy: createdBy,
                 creationDate: new Date().toISOString(),
+                fechaSalida: fechaSalida || "Fecha de salida",
                 products: selectedProducts.map((product) => ({
                     itemCode: product.id?.toString() || "string",
                     itemDescription: product.nombre || "string",
@@ -101,7 +105,7 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
         };
 
         try {
-            const response = await axios.post(`${apiUrlOrden}/crear`, jsonFinal, { headers: getAuthHeader() });
+            await axios.post(`${apiUrlOrden}/crear`, jsonFinal, { headers: getAuthHeader() });
             Toastify({
                 text: "Pedido finalizado",
                 duration: 1000,
@@ -121,9 +125,6 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
                     y: "1.5rem",
                 },
             }).showToast();
-
-            console.log(jsonFinal)
-            console.log(response)
 
             // Limpiar productos seleccionados y regresar a OrderPage
             setTimeout(() => {
@@ -155,18 +156,46 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
             </div>
 
             <form onSubmit={handleSubmit} className="mt-4">
-                <div className="mb-3">
-                    <label htmlFor="numeroOrden" className="form-label">Número de Orden</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        id="numeroOrden"
-                        value={orderNumber}
-                        onChange={(e) => setOrderNumber(e.target.value)}
-                        required
-                        min="1"
-                        placeholder="Ingrese el número de orden"
-                    />
+                <div className="mb-3 row">
+                    <div className="col-12 col-lg-4">
+                        <label htmlFor="numeroOrden" className="form-label">Número de Orden</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            id="numeroOrden"
+                            value={orderNumber}
+                            onChange={(e) => setOrderNumber(e.target.value)}
+                            required
+                            min="1"
+                            placeholder="Ingrese el número de orden"
+                        />
+                    </div>
+                    <div className="col-12 col-lg-4">
+                        <label htmlFor="origenPedido" className="form-label">Origen</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="origenPedido"
+                            value={origenPedido}
+                            onChange={(e) => setOrigenPedido(e.target.value)}
+                            required
+                            placeholder="Ingrese el origen"
+                        />
+                    </div>
+                    <div className="col-12 col-lg-4">
+                        <label htmlFor="fechaSalida" className="form-label">Fecha de Salida</label>
+                        <input
+                            type="datetime-local"
+                            className="form-control"
+                            id="fechaSalida"
+                            value={fechaSalida}
+                            onChange={(e) => setFechaSalida(e.target.value)}
+                            required
+                            min={new Date().toISOString().slice(0, 16)}
+                            placeholder="Ingrese la fecha y hora en la que saldrá el pedido"
+                        />
+
+                    </div>
                 </div>
 
                 <div className="mb-3">
