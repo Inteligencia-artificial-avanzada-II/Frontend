@@ -16,6 +16,7 @@ import HomePage from "../pages/HomePage";
 import OrderPage from "../pages/OrderPage/OrderPage";
 
 import styles from "../styles/styles-approuter.module.scss";  // Para los estilos CSS
+import HistoricPage from "../pages/HistoricoPage/HistoricPage";
 
 const AppRouter = () => {
   const { isAuthenticated, loading } = useAuth();  // Obtenemos isAuthenticated y loading
@@ -88,6 +89,16 @@ const AppRouter = () => {
                 }
               />
 
+              <Route
+                path="/historic"
+                element={
+                  <ProtectedRoute>
+                    <HistoricPage />
+                  </ProtectedRoute>
+                }
+              />
+
+    
               {/* Redirigir cualquier otra URL dependiendo de la autenticación */}
               <Route
                 path="*"

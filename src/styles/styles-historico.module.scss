@@ -1,0 +1,90 @@
+.container {
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+  }
+  
+  .titulo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #004aad;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .filtros {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  
+    .filtroItem {
+      display: flex;
+      flex-direction: column;
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+  
+      label {
+        font-weight: bold;
+        color: #343a40;
+        margin-bottom: 0.5rem;
+      }
+  
+      input,
+      select {
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        background-color: #ffffff;
+  
+        &:focus {
+          border-color: #004aad;
+          outline: none;
+        }
+      }
+    }
+  
+    .botonAplicar {
+      padding: 0.75rem 1.5rem;
+      background-color: #004aad;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #00337d;
+      }
+    }
+  }
+  
+  .tablaContainer {
+    overflow-x: auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tabla {
+    width: 100%;
+    border-collapse: collapse;
+  
+    th,
+    td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+  
+    th {
+      background-color: #004aad;
+      color: #ffffff;
+      font-weight: bold;
+    }
+  
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+  }
+  

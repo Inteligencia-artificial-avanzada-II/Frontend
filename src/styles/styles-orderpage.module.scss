@@ -49,6 +49,39 @@
       background-color: #0056b3;
     }
   }
+
+  .dropdownContainer {
+    margin-top: 10px;
+    text-align: left;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      font-size: 14px;
+      background-color: #f8f9fa;
+      color: #555;
+      transition: all 0.3s;
+
+      &:hover {
+        border-color: #007bff;
+        background-color: #eef2f7;
+      }
+
+      option {
+        color: #333;
+      }
+    }
+  }
 }
 
 .searchBar {
@@ -67,6 +100,8 @@
 }
 
 .orderCart {
+  display: flex;
+  flex-direction: column; // Asegura que los elementos dentro del carrito se organicen en columnas
   padding: 15px;
   background-color: #f8f9fa;
   height: 100vh;
@@ -76,15 +111,14 @@
   right: 0;
   top: 0;
   width: 100%;
-  max-width: 300px;
+  max-width: 320px;
   z-index: 999;
   border-radius: 10px 0 0 10px;
 
-  // Botón para ocultar la ventana
   .hideOrderButton {
     position: absolute;
-    top: 10px; // Colocado en la esquina superior
-    left: 10px; // Separado ligeramente del borde izquierdo
+    top: 10px;
+    left: 10px;
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -106,70 +140,69 @@
   h5 {
     margin-bottom: 15px;
     color: #e63946;
-    font-size: 20px;
+    font-size: 22px;
     text-align: center;
     font-weight: bold;
   }
 
   .orderList {
-    max-height: calc(100vh - 220px);
+    flex-grow: 1; // Permite que la lista ocupe todo el espacio disponible
     overflow-y: auto;
     border-top: 1px solid #dee2e6;
-    padding-top: 10px;
-    margin-bottom: 15px;
+    padding-top: 15px;
+    margin-bottom: 20px; // Espacio adicional debajo de la lista
   }
 
   .orderProduct {
     display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #fff;
+    align-items: center; // Alinea al centro verticalmente
+    gap: 20px; // Espacio entre imagen y texto
+    margin-bottom: 20px; // Espaciado entre productos
+    padding: 15px;
+    background-color: #ffffff;
     border: 1px solid #ececec;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 
     img {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-      margin-right: 10px;
-      border-radius: 5px;
+      width: 100px; // Tamaño aumentado para mayor visibilidad
+      height: 100px;
+      object-fit: cover; // Asegura que la imagen mantenga proporciones
+      border-radius: 10px;
       border: 1px solid #ddd;
+      margin: 0 auto; // Centra la imagen horizontalmente
     }
 
     .orderProductInfo {
       flex-grow: 1;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center; // Centra el contenido verticalmente
+      gap: 8px; // Espacio entre las líneas de texto
 
       p {
         margin: 0;
         font-size: 14px;
         font-weight: 600;
         color: #333;
-      }
-
-      input {
-        margin-top: 5px;
-        width: 60px;
-        font-size: 12px;
-        padding: 4px;
-        border-radius: 5px;
-        border: 1px solid #ced4da;
+        line-height: 1.5; // Mejor legibilidad
       }
     }
   }
 
   .btnGroup {
     display: flex;
-    justify-content: center;
+    justify-content: space-between; // Botones distribuidos a los extremos
     gap: 10px;
-    margin-top: 20px;
+    margin-top: auto; // Empuja los botones al final del contenedor
+    padding-top: 20px; // Espaciado adicional superior
+    border-top: 1px solid #dee2e6; // Línea separadora para claridad visual
 
     .btn {
-      padding: 10px 25px;
+      padding: 12px 20px; // Botones más grandes
       font-size: 16px;
       border-radius: 25px;
-      flex: none;
       font-weight: bold;
     }
 
@@ -195,7 +228,7 @@
   }
 }
 
-// Pestaña para mostrar la ventana de orden cuando esté oculta
+
 .showOrderTab {
   position: fixed;
   top: 50%;
@@ -203,14 +236,14 @@
   transform: translateY(-50%);
   background-color: #007bff;
   color: #fff;
-  padding: 5px 10px; // Tamaño reducido
+  padding: 5px 10px;
   cursor: pointer;
   font-weight: bold;
   border-radius: 5px 0 0 5px;
   font-size: 14px;
   z-index: 999;
-  width: 5px; // Ancho pequeño
-  height: 90px; // Alto pequeño para ser un fragmento
+  width: 5px;
+  height: 90px;
 
   display: flex;
   align-items: center;
@@ -220,3 +253,35 @@
     background-color: #0056b3;
   }
 }
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px; // Espacio entre el input y el icono
+  background-color: #ffffff;
+  border-radius: 25px;
+  padding: 10px 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ced4da;
+
+  input {
+    flex: 1; // Toma todo el espacio disponible
+    border: none;
+    outline: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 25px;
+    background-color: transparent;
+
+    &::placeholder {
+      color: #888;
+    }
+  }
+
+  i {
+    color: #007bff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+}
+
