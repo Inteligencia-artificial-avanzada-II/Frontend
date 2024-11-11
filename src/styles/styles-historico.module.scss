@@ -1,90 +1,194 @@
 .container {
-    padding: 1.5rem;
-    background-color: #f8f9fa;
-  }
+    padding: 20px;
+    background-color: #f2f4f8; /* Light gray background */
+    min-height: 100vh;
   
-  .titulo {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #004aad;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+    .titulo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #34495e; /* Dark slate gray */
+      text-align: center;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
   
-  .filtros {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin-bottom: 1.5rem;
-  
-    .filtroItem {
+    .filtros {
       display: flex;
-      flex-direction: column;
-      margin-right: 1rem;
-      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 15px;
+      background-color: #ffffff; /* White background */
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+      justify-content: space-between;
   
-      label {
-        font-weight: bold;
-        color: #343a40;
-        margin-bottom: 0.5rem;
+      .filtroItem {
+        flex: 1;
+        min-width: 180px;
+        display: flex;
+        flex-direction: column;
+  
+        label {
+          font-size: 14px;
+          font-weight: 600;
+          color: #5d6d7e; /* Muted text color */
+          margin-bottom: 5px;
+        }
+  
+        input,
+        select {
+          padding: 10px;
+          border: 1px solid #dcdfe3;
+          border-radius: 8px;
+          font-size: 14px;
+          background-color: #ffffff;
+          color: #34495e;
+          transition: all 0.3s ease;
+  
+          &:focus {
+            border-color: #3498db; /* Light blue */
+            box-shadow: 0 0 4px rgba(52, 152, 219, 0.5);
+            outline: none;
+          }
+        }
       }
   
-      input,
-      select {
-        padding: 0.5rem;
+      .botonAplicar {
+        background-color: #3498db; /* Blue button */
+        color: #ffffff;
+        padding: 12px 20px;
+        border: none;
         border-radius: 8px;
-        border: 1px solid #ced4da;
-        background-color: #ffffff;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
   
-        &:focus {
-          border-color: #004aad;
-          outline: none;
+        &:hover {
+          background-color: #2a80b9; /* Darker blue */
+          box-shadow: 0 4px 8px rgba(42, 128, 185, 0.4);
         }
       }
     }
   
-    .botonAplicar {
-      padding: 0.75rem 1.5rem;
-      background-color: #004aad;
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
+    .tablaContainer {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   
-      &:hover {
-        background-color: #00337d;
+      .tabla {
+        width: 100%;
+        border-collapse: collapse;
+  
+        thead {
+          background-color: #3498db; /* Blue header */
+  
+          th {
+            padding: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: left;
+            border-bottom: 2px solid #dcdfe3;
+          }
+        }
+  
+        tbody {
+          tr {
+            transition: background-color 0.2s ease;
+  
+            &:hover {
+              background-color: #f2f6fc; /* Subtle hover background */
+              cursor: pointer;
+            }
+  
+            td {
+              padding: 15px;
+              font-size: 14px;
+              color: #34495e; /* Text color */
+              border-bottom: 1px solid #dcdfe3;
+  
+              p {
+                margin: 0;
+              }
+            }
+          }
+        }
       }
     }
-  }
   
-  .tablaContainer {
-    overflow-x: auto;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+    .detalleOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
   
-  .tabla {
-    width: 100%;
-    border-collapse: collapse;
+      .detalleModal {
+        background-color: #ffffff; /* White background */
+        border-radius: 12px;
+        padding: 25px;
+        width: 90%;
+        max-width: 700px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        position: relative;
   
-    th,
-    td {
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 1px solid #e9ecef;
-    }
+        h3 {
+          font-size: 20px;
+          font-weight: bold;
+          color: #3498db; /* Blue title */
+          margin-bottom: 20px;
+          text-align: center;
+        }
   
-    th {
-      background-color: #004aad;
-      color: #ffffff;
-      font-weight: bold;
-    }
+        .detalleContent {
+          font-size: 14px;
+          color: #34495e;
   
-    tr:hover {
-      background-color: #f8f9fa;
+          ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+  
+            li {
+              padding: 10px 0;
+              border-bottom: 1px solid #dcdfe3;
+  
+              &:last-child {
+                border-bottom: none;
+              }
+            }
+          }
+        }
+  
+        button {
+          background-color: #3498db;
+          color: #ffffff;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: bold;
+          cursor: pointer;
+          margin-top: 20px;
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          transition: background-color 0.3s ease;
+  
+          &:hover {
+            background-color: #2a80b9;
+          }
+        }
+      }
     }
   }
   
