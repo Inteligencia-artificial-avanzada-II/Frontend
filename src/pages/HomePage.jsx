@@ -3,25 +3,13 @@ import styles from "../styles/styles-homepage.module.scss"
 import { getEnvironmentURL } from "../utils/getUrl";
 import axios from "axios";
 
-const productosDisponibles = [
-    { id: 1, itemCode: "001", itemDescription: "Mantecadas Mármol", requestedQuantity: "1 tarima", salePrice: "25.00" },
-    { id: 2, itemCode: "002", itemDescription: "Donas Azucaradas", requestedQuantity: "2 tarimas", salePrice: "15.00" },
-    { id: 3, itemCode: "003", itemDescription: "Pan Blanco", requestedQuantity: "3 tarimas", salePrice: "20.00" },
-    { id: 4, itemCode: "004", itemDescription: "Pan Integral", requestedQuantity: "2 tarimas", salePrice: "22.00" },
-    { id: 5, itemCode: "005", itemDescription: "Nito", requestedQuantity: "1 tarima", salePrice: "10.00" },
-    { id: 6, itemCode: "006", itemDescription: "Gansito", requestedQuantity: "2 tarimas", salePrice: "12.00" },
-    { id: 7, itemCode: "007", itemDescription: "Roles de Canela", requestedQuantity: "1 tarima", salePrice: "18.00" },
-    { id: 8, itemCode: "008", itemDescription: "Barritas Fresa", requestedQuantity: "3 tarimas", salePrice: "14.00" },
-    { id: 9, itemCode: "009", itemDescription: "Tortillinas", requestedQuantity: "4 tarimas", salePrice: "11.00" },
-    { id: 10, itemCode: "010", itemDescription: "Pingüinos", requestedQuantity: "2 tarimas", salePrice: "16.00" }
-];
-
 const HomePage = () => {
     const [opcion, setOpcion] = useState('opcionAutomatica');
     const [archivoSubido, setArchivoSubido] = useState(false);
     const [priorityProducts, setPriorityProducts] = useState([]);
     const [priorityProductsGet, setPriorityProductsGet] = useState([])
     const [selectedProductId, setSelectedProductId] = useState('');
+    const [productosDisponibles, setProductosDisponibles] = useState([]);
     const apiOrdenUrl = `${getEnvironmentURL()}/orden`
     const apiProductoPrioritario = `${getEnvironmentURL()}/priorityproduct`
 
@@ -54,6 +42,24 @@ const HomePage = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchProductosDisponibles = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await axios.get(`${getEnvironmentURL()}/inventariofabrica/consultarTodos`, {
+                    headers: { "Authorization": `Token ${token}` },
+                });
+                if (response.data && response.data.length > 0) {
+                    setProductosDisponibles(response.data);
+                } else {
+                    console.log("La respuesta de la API está vacía o no contiene datos.");
+                }
+            } catch (error) {
+                console.error("Error al obtener productos disponibles", error);
+            }
+        };
+        fetchProductosDisponibles();
+    }, []);
 
     const handleAgregarProducto = () => {
         const productoSeleccionado = productosDisponibles.find(producto => producto.id === parseInt(selectedProductId));
@@ -68,23 +74,19 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        const obtenerProductosDisponibles = () => {
+        const fetchPriorityProducts = async () => {
             const token = localStorage.getItem('token');
-            const urlConsultarTodos = `${apiProductoPrioritario}/consultarTodos`;
-
-            axios.get(urlConsultarTodos, { headers: { "Authorization": `Token ${token}` } })
-                .then((response) => {
-                    const products = response.data.data?.products || []; // Obtiene los productos si existen
-                    setPriorityProductsGet(products);
-                    console.log("Productos obtenidos:", products);
-                })
-                .catch((error) => {
-                    console.error("Error al obtener los productos:", error);
+            try {
+                const response = await axios.get(`${apiProductoPrioritario}/consultarTodos`, {
+                    headers: { "Authorization": `Token ${token}` },
                 });
+                const products = response.data.data?.products || [];
+                setPriorityProductsGet(products);
+            } catch (error) {
+                console.error("Error al obtener los productos prioritarios", error);
+            }
         };
-
-        // Llamada inicial para obtener los productos prioritarios al montar el componente
-        obtenerProductosDisponibles();
+        fetchPriorityProducts();
     }, []);
 
     // Función para actualizar los productos prioritarios en la base de datos cuando `priorityProducts` cambia
@@ -96,8 +98,6 @@ const HomePage = () => {
             axios
                 .post(urlCrearPriorityProduct, { products: priorityProducts }, { headers: { "Authorization": `Token ${token}` } })
                 .then((response) => {
-                    console.log("Productos prioritarios actualizados:", response.data);
-                    // Refrescar la lista después de actualizarla en la base de datos
                     setPriorityProductsGet(priorityProducts);
                 })
                 .catch((error) => {
@@ -252,20 +252,22 @@ const HomePage = () => {
                             <h3>AÑADIR PRODUCTOS PRIORITARIOS</h3>
 
                             {/* Dropdown y botón de agregar */}
-                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+                            <div className={styles.dropdownContainer}>
                                 <select
                                     value={selectedProductId}
                                     onChange={(e) => setSelectedProductId(e.target.value)}
-                                    style={{ marginRight: '10px', padding: '5px' }}
+                                    className={styles.dropdownSelect}
                                 >
                                     <option value="">Selecciona un producto</option>
                                     {productosDisponibles.map((producto) => (
                                         <option key={producto.id} value={producto.id}>
-                                            {producto.itemDescription}
+                                            {producto.descripcion}
                                         </option>
                                     ))}
                                 </select>
-                                <button onClick={handleAgregarProducto} style={{ padding: '5px 10px' }}>Agregar</button>
+                                <button onClick={handleAgregarProducto} className={styles.addButton}>
+                                    Agregar
+                                </button>
                             </div>
 
                             {/* Lista de productos prioritarios */}
@@ -273,7 +275,7 @@ const HomePage = () => {
                                 <ul style={{ listStyleType: 'none', padding: 0, maxHeight: '150px', overflowY: 'auto' }}>
                                     {priorityProductsGet.map((producto) => (
                                         <li key={producto.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                                            <span>{producto.itemDescription}</span>
+                                            <span>{producto.descripcion}</span>
                                             <button onClick={() => handleEliminarProducto(producto.id)} style={{ padding: '2px 5px', backgroundColor: '#ff4d4f', color: '#fff', border: 'none', borderRadius: '4px' }}>Eliminar</button>
                                         </li>
                                     ))}
