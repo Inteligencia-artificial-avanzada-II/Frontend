@@ -45,7 +45,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
 ProtectedRoute.propTypes = {
     children: PropTypes.node.isRequired,
-    allowedRoles: PropTypes.arrayOf(PropTypes.string).isRequired, // Lista de roles permitidos
+    allowedRoles: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default ProtectedRoute;

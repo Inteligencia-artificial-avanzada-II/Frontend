@@ -2,8 +2,11 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from "../styles/styles-sidebarcomp.module.scss";
 import bimboLogo from "../assets/bimboLogoDos.png";
+import { useAuth } from '../context/useAuth';
 
 const SidebarComp = ({ rolUsuario }) => {
+    const { logout } = useAuth();
+
     return (
         <div className={`d-flex flex-column bg-light p-3 ${styles.sidebar}`}>
             <div className={`${styles.logoContainer}`}>
@@ -29,6 +32,13 @@ const SidebarComp = ({ rolUsuario }) => {
                                     Reportes
                                 </NavLink>
                             </li>
+                            <li className={`nav-item d-flex w-100 ${styles.navItem}`}>
+                                <button
+                                    onClick={logout}
+                                    className={`nav-link w-100 text-start ${styles.navLink}`}>
+                                    Logout
+                                </button>
+                            </li>
                         </>
                     )}
                     {/* Opciones para Orden */}
@@ -43,6 +53,13 @@ const SidebarComp = ({ rolUsuario }) => {
                                 <NavLink to="/historicoor" className={({ isActive }) => `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`}>
                                     Histórico Orden
                                 </NavLink>
+                            </li>
+                            <li className={`nav-item d-flex ${styles.navItem}`}>
+                                <button
+                                    onClick={logout}
+                                    className={`nav-link w-100 text-start ${styles.navLink}`}>
+                                    Logout
+                                </button>
                             </li>
                         </>
                     )}

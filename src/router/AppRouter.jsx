@@ -90,9 +90,9 @@ const AppRouter = () => {
               />
 
               <Route
-                path="/historic"
+                path="/historicoor"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['Orden']}>
                     <HistoricPage />
                   </ProtectedRoute>
                 }
