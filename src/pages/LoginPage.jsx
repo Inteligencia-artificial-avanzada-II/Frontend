@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/useAuth"
 import styles from "../styles/styles-loginpage.module.scss"
+import bimboLogo from "/assets/bimboLogo.png"
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -24,7 +25,7 @@ const LoginPage = () => {
   return (
     <div className={`row ${styles.loginContainer}`}>
       <div className={`col-12 col-md-6 ${styles.loginLeft}`}>
-        <img src="/src/assets/bimbologo.png" alt="Grupo Bimbo" className={`img-fluid ${styles.logo}`} />
+        <img src={bimboLogo} alt="Grupo Bimbo" className={`img-fluid ${styles.logo}`} />
       </div>
       <div className={`col-12 col-md-6 ${styles.loginRight}`}>
         <h2>Iniciar Sesión</h2>

@@ -19,7 +19,7 @@ import styles from "../styles/styles-approuter.module.scss";  // Para los estilo
 import HistoricPage from "../pages/HistoricoPage/HistoricPage";
 
 const AppRouter = () => {
-  const { isAuthenticated, loading } = useAuth();  // Obtenemos isAuthenticated y loading
+  const { isAuthenticated, loading, rolUsuario } = useAuth();  // Obtenemos isAuthenticated y loading
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const botonPresionado = () => {
@@ -50,14 +50,14 @@ const AppRouter = () => {
           {/* Sidebar desplegable cuando está abierto en móviles */}
           {isAuthenticated && sidebarOpen && (
             <div className={`col-12 p-0 d-md-none ${styles.sidebarOverlay}`}>
-              <SidebarComp />
+              <SidebarComp rolUsuario={rolUsuario} />
             </div>
           )}
 
           {/* Sidebar normal visible en pantallas grandes */}
           {isAuthenticated ? (
             <div className="d-none d-md-block col-md-3 col-lg-2 p-0">
-              <SidebarComp />
+              <SidebarComp rolUsuario={rolUsuario} />
             </div>
           ) : null}
 
@@ -74,7 +74,7 @@ const AppRouter = () => {
               <Route
                 path="/home"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['Admin']}>
                     <HomePage />
                   </ProtectedRoute>
                 }
@@ -83,7 +83,7 @@ const AppRouter = () => {
               <Route
                 path="/order"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['Orden']}>
                     <OrderPage />
                   </ProtectedRoute>
                 }

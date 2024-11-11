@@ -1,79 +1,90 @@
 import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { getEnvironmentURL } from "../utils/getUrl"
+import { getEnvironmentURL } from "../utils/getUrl";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
+  const [rolUsuario, setRolUsuario] = useState(localStorage.getItem('rolUsuario') || null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);  // Estado de carga inicial en true
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const apiUrlUsuario = `${getEnvironmentURL()}/usuario`;
 
-  // Función para iniciar sesión (llamada a la API de autenticación)
   const login = async (credentials) => {
     setLoading(true);
     setError(null);
     try {
       const response = await axios.post(`${apiUrlUsuario}/login`, credentials);
 
-      const userToken = response.data.data.token; // Obtener el token de la respuesta
+      const userToken = response.data.data.token;
+      const userRol = response.data.data.rolUsuario;
+
+      console.log(response.data.data);
+      console.log(userRol);
+
       setToken(userToken);
-      localStorage.setItem('token', userToken); // Guardar el token en localStorage
+      setRolUsuario(userRol);
       setIsAuthenticated(true);
 
-      return true; // Login exitoso
+      localStorage.setItem('token', userToken);
+      localStorage.setItem('rolUsuario', userRol); // Guardar rol directamente en localStorage
+
+      return true;
     } catch (error) {
       console.error('Error en login:', error);
-      setError(error.response?.data?.message || 'Error al iniciar sesión');  // Mostrar error detallado
-      return false; // Error en el login
+      setError(error.response?.data?.message || 'Error al iniciar sesión');
+      return false;
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para validar el token
   const validateToken = async (storedToken) => {
     try {
-      const response = await axios.post(`${apiUrlUsuario}/validatoken`, { token: storedToken }, {headers: {Authorization: `Token ${storedToken}`}});
-      return response.status === 200;  // Si es 200, el token es válido
+      const response = await axios.post(`${apiUrlUsuario}/validatoken`, { token: storedToken }, { headers: { Authorization: `Token ${storedToken}` } });
+      return response.status === 200;
     } catch (error) {
-      return false; // Token inválido o error en la validación
+      return false;
     }
   };
 
-  // Función para cerrar sesión
   const logout = () => {
     setToken(null);
+    setRolUsuario(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('rolUsuario');
     setIsAuthenticated(false);
     setError(null);
   };
 
-  // Verificar el token al montar el componente
   useEffect(() => {
     const checkToken = async () => {
       const storedToken = localStorage.getItem('token');
-      if (storedToken) {
-        const tokenValido = await validateToken(storedToken);  // Validar token
+      const storedRolUsuario = localStorage.getItem('rolUsuario');
+
+      if (storedToken && storedRolUsuario) {
+        const tokenValido = await validateToken(storedToken);
         if (tokenValido) {
           setToken(storedToken);
+          setRolUsuario(storedRolUsuario);
           setIsAuthenticated(true);
         } else {
-          localStorage.removeItem('token');  // Borrar token si no es válido
+          localStorage.removeItem('token');
+          localStorage.removeItem('rolUsuario');
           setIsAuthenticated(false);
         }
       }
-      setLoading(false);  // Finalizar el estado de carga
+      setLoading(false);
     };
 
-    checkToken();  // Llamar la función de verificación
+    checkToken();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated, login, validateToken, logout, loading, error }}>
+    <AuthContext.Provider value={{ token, rolUsuario, isAuthenticated, login, validateToken, logout, loading, error }}>
       {children}
     </AuthContext.Provider>
   );

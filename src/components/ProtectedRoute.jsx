@@ -3,47 +3,49 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import PropTypes from 'prop-types';
 
-const ProtectedRoute = ({ children }) => {
-    const { validateToken } = useAuth();
-    const [isTokenValid, setIsTokenValid] = useState(null);  // Estado para almacenar la validez del token
-    const [loading, setLoading] = useState(true);  // Estado de carga mientras se valida el token
+const ProtectedRoute = ({ children, allowedRoles }) => {
+    const { validateToken, rolUsuario } = useAuth();
+    const [isTokenValid, setIsTokenValid] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const checkToken = async () => {
             const token = localStorage.getItem("token");
 
             if (token) {
-                const isValid = await validateToken(token);  // Asume que validateToken es asíncrono
-                setIsTokenValid(isValid);  // Actualiza el estado según si el token es válido o no
+                const isValid = await validateToken(token);
+                setIsTokenValid(isValid);
                 if (!isValid) {
-                    localStorage.removeItem("token");  // Remover el token si es inválido
+                    localStorage.removeItem("token");
                 }
             } else {
-                setIsTokenValid(false);  // No hay token, así que no está autenticado
+                setIsTokenValid(false);
             }
-            setLoading(false);  // Finaliza la carga
+            setLoading(false);
         };
 
-        checkToken();  // Ejecutar la verificación del token
+        checkToken();
     }, [validateToken]);
 
-    // Mostrar un estado de carga mientras se valida el token
     if (loading) {
         return <div>Cargando...</div>;
     }
 
-    // Si el token es inválido, redirigir al login
     if (!isTokenValid) {
         return <Navigate to="/" replace />;
     }
 
-    // Si el token es válido, renderizar el componente hijo
+    if (!allowedRoles.includes(rolUsuario)) {
+        // Redirige a la ruta principal según el rol del usuario
+        return <Navigate to={rolUsuario === "Admin" ? "/home" : "/order"} replace />;
+    }
+
     return children;
 };
 
-// Definir PropTypes
 ProtectedRoute.propTypes = {
-    children: PropTypes.node.isRequired,  // children debe ser un nodo de React y es requerido
+    children: PropTypes.node.isRequired,
+    allowedRoles: PropTypes.arrayOf(PropTypes.string).isRequired, // Lista de roles permitidos
 };
 
 export default ProtectedRoute;
