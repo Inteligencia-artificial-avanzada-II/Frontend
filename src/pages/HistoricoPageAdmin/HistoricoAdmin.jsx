@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../../styles/styles-historico.module.scss";
 import { getEnvironmentURL } from "../../utils/getUrl";
 
-const HistoricPage = () => {
+const HistoricoAdmin = () => {
   const [filtros, setFiltros] = useState({
     fechaInicio: "",
     cedis: "",
@@ -146,21 +146,17 @@ const HistoricPage = () => {
 
   const abrirDetalle = (detalle) => {
     document.body.style.overflow = "hidden"; // Bloquear scroll
-    document.body.style.position = "fixed";
-    document.body.style.width = "100%";
     setDetalle(detalle);
   };
-  
+
   const cerrarDetalle = () => {
     document.body.style.overflow = ""; // Restaurar scroll
-    document.body.style.position = "";
-    document.body.style.width = "";
     setDetalle(null);
   };
-  
+
   return (
     <div className={styles.container}>
-      <h2 className={styles.titulo}>Histórico de Pedidos</h2>
+      <h2 className={styles.titulo}>Histórico de Pedidos - Admin</h2>
 
       <div className={styles.filtros}>
         <div className={styles.filtroItem}>
@@ -296,4 +292,4 @@ const HistoricPage = () => {
   );
 };
 
-export default HistoricPage;
+export default HistoricoAdmin;

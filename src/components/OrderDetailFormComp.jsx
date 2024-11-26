@@ -4,9 +4,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import styles from "../styles/styles-orderdetailformcomp.module.scss";
 import { getEnvironmentURL } from "../utils/getUrl";
 
@@ -40,7 +37,6 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
         setAvailableVehicles(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("Error al obtener los camiones disponibles:", error);
-        setAvailableVehicles([]);
       }
     };
     fetchAvailableVehicles();
@@ -55,7 +51,6 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
         setAvailableContainers(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("Error al obtener los contenedores disponibles:", error);
-        setAvailableContainers([]);
       }
     };
     fetchAvailableContainers();
@@ -70,13 +65,12 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
         setAvailableCedis(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("Error al obtener los centros de distribución (CEDIS):", error);
-        setAvailableCedis([]);
       }
     };
     fetchAvailableCedis();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     Swal.fire({
@@ -84,57 +78,41 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
       icon: "question",
       html: `Se enviarán los productos agregados del carrito.`,
       showCancelButton: true,
-      focusConfirm: false,
       confirmButtonText: "Sí",
       cancelButtonText: "No",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const createdBy = localStorage.getItem("token");
-
         const jsonFinal = {
           sqlData: {
-            idContenedor: container || "Id del contenedor",
-            idCamion: vehicle || "Id del camion",
-            origen: origenPedido || "Fabrica de origen",
-            idCedis: distributionCenter || "Id del cedis",
+            idContenedor: container,
+            idCamion: vehicle,
+            idCedis: distributionCenter,
             isActive: true,
-            localization: "En transito",
           },
           mongoData: {
-            orderNumber: orderNumber || "string",
-            createdBy: createdBy,
-            modifiedBy: createdBy,
+            orderNumber,
+            createdBy: localStorage.getItem("token"),
             creationDate: new Date().toISOString(),
-            fechaSalida: fechaSalida || "Fecha de salida",
             products: selectedProducts.map((product) => ({
               itemCode: product.id?.toString() || "string",
-              itemDescription: product.selectedOption || "Descripción no seleccionada",
+              itemDescription: product.botana || "string",
               requestedQuantity: product.cantidadAgregada || 0,
-              salePrice: 0,
             })),
           },
         };
-
-        console.log(jsonFinal)
 
         try {
           await axios.post(`${apiUrlOrden}/crear`, jsonFinal, { headers: getAuthHeader() });
           Toastify({
             text: "Pedido finalizado",
-            duration: 1000,
+            duration: 3000,
             gravity: "top",
             position: "right",
             style: {
-              background: "linear-gradient(to right, white, blue)",
-              borderRadius: "2rem",
-              textTransform: "uppercase",
-              fontSize: ".75rem",
+              background: "linear-gradient(to right, #4CAF50, #008000)",
             },
           }).showToast();
-
-          setTimeout(() => {
-            clearSelectedProducts();
-          }, 1000);
+          clearSelectedProducts();
         } catch (error) {
           console.error("Error al enviar el pedido:", error);
         }
@@ -142,50 +120,30 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
     });
   };
 
-  const carouselSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: Math.max(1, Math.min(selectedProducts.length, 5)), // Asegurar al menos 1 slide
-    slidesToScroll: 1,
-    centerMode: true,
-    centerPadding: "0",
-    focusOnSelect: true,
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: Math.max(1, Math.min(selectedProducts.length, 1)), // También asegúrate aquí
-        },
-      },
-    ],
-  };
-  
-
   return (
     <section className="col-12">
       <h4 className="mb-4">Resumen de Pedido</h4>
-      <div className={styles.horizontalScrollContainer}>
-        <Slider {...carouselSettings}>
-    {selectedProducts.map((product) => (
-        <div className={styles.card} key={product.id}>
-        <div className={styles.cardContent}>
-            <div className={styles.imageContainer}>
-            <img src={product.imagen} className="img-fluid" alt={product.botana} />
-            </div>
-            <div className={styles.infoContainer}>
-            <h5 className={styles.cardTitle}>{product.botana}</h5>
-            <p className={styles.cardText}>Cantidad: {product.cantidadAgregada}</p>
-            <p className={styles.cardText}>
-                 {product.selectedOption || "No seleccionado"}
-            </p>
-            </div>
-        </div>
-        </div>
-    ))}
-    </Slider>
 
+      <div className={styles.horizontalScrollContainer}>
+  {selectedProducts.map((product) => (
+    <div className={`card ${styles.card}`} key={product.id}>
+      {/* Contenedor de la imagen */}
+      <div className={styles.imageContainer}>
+        <img src={product.imagen} alt={product.botana} />
       </div>
+      {/* Contenedor de la información */}
+      <div className={styles.infoContainer}>
+        <h5 className={styles.cardTitle}>{product.botana}</h5>
+        <p className={styles.cardText}>Cantidad: {product.cantidadAgregada}</p>
+        {/* Descripción adicional */}
+        <p className={styles.cardDescription}>
+          {product.selectedOption || "No seleccionado"}
+        </p>
+      </div>
+    </div>
+  ))}
+</div>
+
 
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mb-3 row">
@@ -200,8 +158,6 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
               required
-              min="1"
-              placeholder="Ingrese el número de orden"
             />
           </div>
           <div className="col-12 col-lg-4">
@@ -215,7 +171,6 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
               value={origenPedido}
               onChange={(e) => setOrigenPedido(e.target.value)}
               required
-              placeholder="Ingrese el origen"
             />
           </div>
           <div className="col-12 col-lg-4">
@@ -229,8 +184,6 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
               value={fechaSalida}
               onChange={(e) => setFechaSalida(e.target.value)}
               required
-              min={new Date().toISOString().slice(0, 16)}
-              placeholder="Ingrese la fecha y hora en la que saldrá el pedido"
             />
           </div>
         </div>
@@ -313,7 +266,6 @@ OrderDetailFormComp.propTypes = {
       botana: PropTypes.string.isRequired,
       imagen: PropTypes.string.isRequired,
       cantidadAgregada: PropTypes.number.isRequired,
-      selectedOption: PropTypes.string,
     })
   ).isRequired,
   onBack: PropTypes.func.isRequired,

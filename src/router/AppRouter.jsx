@@ -15,15 +15,17 @@ import SidebarComp from "../components/SidebarComp";
 import HomePage from "../pages/HomePage";
 import OrderPage from "../pages/OrderPage/OrderPage";
 
-import styles from "../styles/styles-approuter.module.scss";  // Para los estilos CSS
+import styles from "../styles/styles-approuter.module.scss"; // Para los estilos CSS
 import HistoricPage from "../pages/HistoricoPage/HistoricPage";
+import HistoricoAdmin from "../pages/HistoricoPageAdmin/HistoricoAdmin"; // Importa el nuevo componente
+import Reportes from "../pages/ReportesAdmin/Reportes";
 
 const AppRouter = () => {
-  const { isAuthenticated, loading, rolUsuario } = useAuth();  // Obtenemos isAuthenticated y loading
+  const { isAuthenticated, loading, rolUsuario } = useAuth(); // Obtenemos isAuthenticated y loading
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const botonPresionado = () => {
-    setSidebarOpen(!sidebarOpen);  // Alterna el sidebar
+    setSidebarOpen(!sidebarOpen); // Alterna el sidebar
   };
 
   // Si loading es true, mostramos una pantalla de carga
@@ -62,19 +64,29 @@ const AppRouter = () => {
           ) : null}
 
           {/* Contenido principal */}
-          <main className={`${isAuthenticated ? `mt-5 mt-md-0 col-12 col-md-9 col-lg-10 ${styles.backgroundDashboard}` : 'col-12'}`}>
+          <main
+            className={`${
+              isAuthenticated
+                ? `mt-5 mt-md-0 col-12 col-md-9 col-lg-10 ${styles.backgroundDashboard}`
+                : "col-12"
+            }`}
+          >
             <Routes>
               {/* Ruta pública: Página de Login */}
-              <Route path="/" element={
-                <PublicRoute>
-                  <LoginPage />
-                </PublicRoute>} />
+              <Route
+                path="/"
+                element={
+                  <PublicRoute>
+                    <LoginPage />
+                  </PublicRoute>
+                }
+              />
 
               {/* Ruta protegida: Página de inicio (HomePage) */}
               <Route
                 path="/home"
                 element={
-                  <ProtectedRoute allowedRoles={['Admin']}>
+                  <ProtectedRoute allowedRoles={["Admin"]}>
                     <HomePage />
                   </ProtectedRoute>
                 }
@@ -83,7 +95,7 @@ const AppRouter = () => {
               <Route
                 path="/order"
                 element={
-                  <ProtectedRoute allowedRoles={['Orden']}>
+                  <ProtectedRoute allowedRoles={["Orden"]}>
                     <OrderPage />
                   </ProtectedRoute>
                 }
@@ -92,13 +104,32 @@ const AppRouter = () => {
               <Route
                 path="/historicoor"
                 element={
-                  <ProtectedRoute allowedRoles={['Orden']}>
+                  <ProtectedRoute allowedRoles={["Orden"]}>
                     <HistoricPage />
                   </ProtectedRoute>
                 }
               />
 
-    
+              {/* Nueva ruta protegida para HistoricoAdmin */}
+              <Route
+                path="/historicoadmin"
+                element={
+                  <ProtectedRoute allowedRoles={["Admin"]}>
+                    <HistoricoAdmin />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Nueva ruta protegida para Reportes */}
+              <Route
+                path="/reportes"
+                element={
+                  <ProtectedRoute allowedRoles={["Admin"]}>
+                    <Reportes />
+                  </ProtectedRoute>
+                }
+              />
+
               {/* Redirigir cualquier otra URL dependiendo de la autenticación */}
               <Route
                 path="*"

@@ -22,11 +22,7 @@ const SidebarComp = ({ rolUsuario }) => {
                                     Dashboard
                                 </NavLink>
                             </li>
-                            <li className={`nav-item d-flex ${styles.navItem}`}>
-                                <NavLink to="/historic" className={({ isActive }) => `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`}>
-                                    Histórico
-                                </NavLink>
-                            </li>
+                           
                             <li className={`nav-item d-flex ${styles.navItem}`}>
                                 <NavLink to="/reportes" className={({ isActive }) => `nav-link w-100 ${styles.navLink} ${isActive ? styles.active : ""}`}>
                                     Reportes
