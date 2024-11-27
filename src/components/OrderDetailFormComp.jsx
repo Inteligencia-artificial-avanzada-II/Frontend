@@ -82,21 +82,27 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
       cancelButtonText: "No",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        const createdBy = localStorage.getItem("token");
         const jsonFinal = {
           sqlData: {
-            idContenedor: container,
-            idCamion: vehicle,
-            idCedis: distributionCenter,
+            idContenedor: container || "Id del contenedor",
+            idCamion: vehicle || "Id del camion",
+            origen: origenPedido || "Fabrica de origen",
+            idCedis: distributionCenter || "Id del cedis",
             isActive: true,
+            localization: "En transito",
           },
           mongoData: {
-            orderNumber,
-            createdBy: localStorage.getItem("token"),
+            orderNumber: orderNumber || "string",
+            createdBy: createdBy,
+            modifiedBy: createdBy,
             creationDate: new Date().toISOString(),
+            fechaSalida: fechaSalida || "Fecha de salida",
             products: selectedProducts.map((product) => ({
               itemCode: product.id?.toString() || "string",
-              itemDescription: product.botana || "string",
+              itemDescription: product.selectedOption || "Descripción no seleccionada",
               requestedQuantity: product.cantidadAgregada || 0,
+              salePrice: 0,
             })),
           },
         };
