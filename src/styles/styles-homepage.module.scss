@@ -1,278 +1,276 @@
 @import "../styles/styles-colors.scss";
 
 .camionesEstatusCard {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #f8f9fa; // Fondo claro
+  border-radius: 15px; // Bordes redondeados
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Sombra ligera
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+
+  &:hover {
+    transform: scale(1.05); // Efecto de hover que agranda la tarjeta
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); // Mayor sombra en hover
+  }
+
+  .icon {
+    width: 50px;
+    height: 50px;
+    background-color: #e0f7fa; // Fondo del ícono por defecto
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    padding: 0.5rem;
-    background-color: #f8f9fa; // Fondo claro
-    border-radius: 15px; // Bordes redondeados
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Sombra ligera
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
+    justify-content: center;
+    border-radius: 50%;
+  }
 
-    &:hover {
-        transform: scale(1.05); // Efecto de hover que agranda la tarjeta
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); // Mayor sombra en hover
-    }
+  .title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #6c757d; // Color del texto
+  }
 
-    .icon {
-        width: 50px;
-        height: 50px;
-        background-color: #e0f7fa; // Fondo del ícono por defecto
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-    }
-
-    .title {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #6c757d; // Color del texto
-    }
-
-    .number {
-        font-size: 1rem;
-        font-weight: 500;
-        color: #343a40; // Color del número
-    }
+  .number {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #343a40; // Color del número
+  }
 }
 
 .camionesEnTransito .icon {
-    background-color: #5de0e6; // Color para "Camiones en tránsito"
+  background-color: #5de0e6; // Color para "Camiones en tránsito"
 }
 
 .camionesEnPatio .icon {
-    background-color: #f8c6d4; // Color para "Camiones en patio"
+  background-color: #fa6f96; // Color para "Camiones en patio"
 }
 
 .camionesEnDescarga .icon {
-    background-color: #80c1ff; // Color para "Camiones en descarga"
+  background-color: #329cff; // Color para "Camiones en descarga"
 }
 
 .containerPrioridadModelo {
-    padding: 0.5rem;
+  padding: 0.5rem;
 
-    .listaOrdenCamiones {
-        background-color: #f8f9fa; // Fondo claro
-        border-radius: 15px; // Bordes redondeados
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Sombra suave
-        height: 37rem;
-        overflow-y: scroll;
+  .listaOrdenCamiones {
+    background-color: #f8f9fa; // Fondo claro
+    border-radius: 15px; // Bordes redondeados
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Sombra suave
+    height: 37rem;
+    overflow-y: scroll;
 
-        .itemCamion {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #ffffff; // Fondo para cada ítem
-            border-radius: 10px;
-            padding: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Sombra para cada ítem
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .itemCamion {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ffffff; // Fondo para cada ítem
+      border-radius: 10px;
+      padding: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Sombra para cada ítem
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-            &:hover {
-                transform: scale(1.02); // Efecto de hover
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            }
+      &:hover {
+        transform: scale(1.02); // Efecto de hover
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
 
-            .numeroCamion {
-                background-color: #004aad; // Fondo azul del número
-                color: #fff;
-                font-size: 1rem;
-                font-weight: bold;
-                border-radius: 10px;
-                text-align: center;
-                padding: 0.5rem;
-            }
+      .numeroCamion {
+        background-color: #004aad; // Fondo azul del número
+        color: #fff;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 10px;
+        text-align: center;
+        padding: 0.5rem;
+      }
 
-            .puertaCamion {
-                font-size: 0.9rem;
-                color: #6c757d;
-                text-align: right;
-                flex-shrink: 0;
-            }
-        }
+      .puertaCamion {
+        font-size: 0.9rem;
+        color: #6c757d;
+        text-align: right;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .modeloPrioridad {
+    .opciones {
+      display: flex;
+      justify-content: space-between;
     }
 
-    .modeloPrioridad {
-        .opciones {
-            display: flex;
-            justify-content: space-between;
-        }
+    .boton {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border: 2px solid $colorAzulHover; // Usa el color principal de tu archivo de colores
+      border-radius: 8px;
+      background-color: transparent;
+      color: $colorNegroLetra; // Color principal para el texto
+      transition: background-color 0.3s ease, color 0.3s ease;
 
-        .boton {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            font-weight: bold;
-            border: 2px solid $colorAzulHover; // Usa el color principal de tu archivo de colores
-            border-radius: 8px;
-            background-color: transparent;
-            color: $colorNegroLetra; // Color principal para el texto
-            transition: background-color 0.3s ease, color 0.3s ease;
-
-            &:hover {
-                background-color: mix($colorBlanco, $colorAzulHover, 40%);
-                color: mix(black, $colorAzulHover, 10%);
-            }
-        }
-
-        .activo {
-            background-color: $colorAzulHover; // Color de fondo para el botón activo
-            color: $colorBlanco; // Color de texto para el botón activo
-        }
-
-        .cargarArchivo {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            justify-content: center;
-        }
-
-        .botonArchivo {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            font-weight: bold;
-            color: $colorBlanco;
-            background-color: $colorGris;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-bottom: 0.5rem;
-
-            &:hover {
-                background-color: mix($colorBlanco, $colorGris, 15%);
-            }
-
-            input[type="file"] {
-                display: none; // Oculta el input de archivo real
-            }
-        }
-
-        .mensajeExito {
-            color: green;
-            font-weight: bold;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
-
-        .titulo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #004aad; // Color principal
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .reloadButton {
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: #004aad; // Color principal
-                text-align: center;
-                margin-bottom: 1rem;
-        }
-
-        .lista {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            max-height: 27rem;
-            overflow-y: auto;
-            background-color: #f8f9fa;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .item {
-            padding: 0.8rem 1rem;
-            display: flex;
-            flex-direction: column;
-            border-bottom: 1px solid #e0e0e0;
-            transition: background-color 0.2s ease;
-
-            &:last-child {
-                border-bottom: none;
-            }
-
-            &:hover {
-                background-color: #e6f7ff;
-            }
-        }
-
-        /* Contenedor principal del dropdown y botón */
-        .dropdownContainer {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-
-            /* Responsive */
-            @media (max-width: 768px) {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-
-        /* Estilo del select */
-        .dropdownSelect {
-            margin-right: 10px;
-            padding: 5px;
-            max-width: 20rem;
-            width: 100%;
-            /* Para que ocupe todo el ancho en pantallas pequeñas */
-            font-size: 1rem;
-
-            /* Responsive */
-            @media (max-width: 768px) {
-                margin-right: 0;
-                margin-bottom: 0.5rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Estilo del botón */
-        .addButton {
-            padding: 5px 10px;
-            font-size: 1rem;
-
-            /* Responsive */
-            @media (max-width: 768px) {
-                width: 100%;
-                font-size: 0.9rem;
-            }
-        }
-
-
-        .prioridad {
-            font-weight: bold;
-            color: #45a29e; // Color para el texto de prioridad
-            margin-bottom: 0.3rem;
-        }
-
-        .detalle {
-            color: #343a40;
-            font-size: 0.9rem;
-        }
-
-        .notificationsContainer {
-            max-height: 200px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .notification {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            border-radius: 5px;
-            background-color: #d1ecf1;
-            border: 1px solid #bee5eb;
-            color: #0c5460;
-        }
-
+      &:hover {
+        background-color: mix($colorBlanco, $colorAzulHover, 40%);
+        color: mix(black, $colorAzulHover, 10%);
+      }
     }
+
+    .activo {
+      background-color: $colorAzulHover; // Color de fondo para el botón activo
+      color: $colorBlanco; // Color de texto para el botón activo
+    }
+
+    .cargarArchivo {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+    }
+
+    .botonArchivo {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-weight: bold;
+      color: $colorBlanco;
+      background-color: $colorGris;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 0.5rem;
+
+      &:hover {
+        background-color: mix($colorBlanco, $colorGris, 15%);
+      }
+
+      input[type="file"] {
+        display: none; // Oculta el input de archivo real
+      }
+    }
+
+    .mensajeExito {
+      color: green;
+      font-weight: bold;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .titulo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #004aad; // Color principal
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .reloadButton {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #004aad; // Color principal
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .lista {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      max-height: 27rem;
+      overflow-y: auto;
+      background-color: #f8f9fa;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .item {
+      padding: 0.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #e0e0e0;
+      transition: background-color 0.2s ease;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background-color: #e6f7ff;
+      }
+    }
+
+    /* Contenedor principal del dropdown y botón */
+    .dropdownContainer {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    /* Estilo del select */
+    .dropdownSelect {
+      margin-right: 10px;
+      padding: 5px;
+      max-width: 20rem;
+      width: 100%;
+      /* Para que ocupe todo el ancho en pantallas pequeñas */
+      font-size: 1rem;
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Estilo del botón */
+    .addButton {
+      padding: 5px 10px;
+      font-size: 1rem;
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        width: 100%;
+        font-size: 0.9rem;
+      }
+    }
+
+    .prioridad {
+      font-weight: bold;
+      color: #45a29e; // Color para el texto de prioridad
+      margin-bottom: 0.3rem;
+    }
+
+    .detalle {
+      color: #343a40;
+      font-size: 0.9rem;
+    }
+
+    .notificationsContainer {
+      max-height: 200px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .notification {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px 15px;
+      border-radius: 5px;
+      background-color: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+  }
 }
