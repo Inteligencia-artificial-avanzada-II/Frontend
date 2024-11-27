@@ -106,8 +106,19 @@ const HomePage = () => {
         }
     }
 
+    const fetchActualizarDataAllInfo = async () => {
+        try {
+            await fetchListaOrdenesContenedores();
+            await fetchListaPrioridad();
+            await fetchContenedoresEstatus();
+        } catch (error) {
+            console.log(`Error al recargar los datos: ${error}`)
+        }
+    }
+
     const fetchListaPrioridad = async () => {
         try {
+
             const token = localStorage.getItem('token'); // Obtener el token de localStorage
 
             if (!token) {
@@ -302,7 +313,7 @@ const HomePage = () => {
                     <div className="col-12 d-flex justify-content-end">
                         <button
                             className={`${styles.reloadButton} btn btn-custom`}
-                            onClick={fetchListaOrdenesContenedores}
+                            onClick={fetchActualizarDataAllInfo}
                             title="Recargar"
                         >
                             <i className="bx bx-revision bx-spin bx-sm"></i>
@@ -419,7 +430,7 @@ const HomePage = () => {
                                     <h3 className={styles.titulo}>LISTA DE PRIORIDAD</h3>
                                     <button
                                         className={`${styles.reloadButton} btn btn-custom`}
-                                        onClick={fetchListaPrioridad}
+                                        onClick={fetchActualizarDataAllInfo}
                                         title="Recargar"
                                     >
                                         <i className='bx bx-revision bx-spin bx-sm'></i>
