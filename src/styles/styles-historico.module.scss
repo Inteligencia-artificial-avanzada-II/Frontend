@@ -84,10 +84,10 @@
         }
   
         .botonLimpiar {
-          background-color: #e74c3c; /* Red button */
+          background-color: #747474; /* Red button */
           &:hover {
-            background-color: #c0392b; /* Darker red */
-            box-shadow: 0 8px 15px rgba(192, 57, 43, 0.4);
+            background-color: #868686; /* Darker red */
+            box-shadow: 0 8px 15px rgba(102, 102, 102, 0.4);
           }
         }
       }

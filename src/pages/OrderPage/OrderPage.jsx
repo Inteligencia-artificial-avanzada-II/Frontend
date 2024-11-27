@@ -67,7 +67,7 @@ const OrderPage = () => {
         gravity: "top",
         position: "right",
         style: {
-          background: "linear-gradient(to right, red, white)",
+          background: "linear-gradient(to right, #800000, #901010)",
         },
       }).showToast();
       return;
@@ -119,7 +119,7 @@ const OrderPage = () => {
       gravity: "top",
       position: "right",
       style: {
-        background: "linear-gradient(to right, white, blue)",
+        background: "linear-gradient(to right, #2e2ed1, #5353ec)",
         borderRadius: "2rem",
         textTransform: "uppercase",
         fontSize: ".75rem",
