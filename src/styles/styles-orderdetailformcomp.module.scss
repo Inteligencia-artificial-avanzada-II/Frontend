@@ -41,7 +41,8 @@
 
     /* Contenedor de la imagen */
     .imageContainer {
-      width: 90px; /* Tamaño fijo de la imagen */
+      flex: 0 0 90px; /* Tamaño fijo para la imagen */
+      width: 90px;
       height: 90px;
       display: flex;
       align-items: center;
@@ -61,9 +62,13 @@
       flex: 1; /* Ocupa el resto del espacio */
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between; /* Separar contenido verticalmente */
+      overflow: hidden; /* Evitar que el contenido desborde */
       padding-right: 1rem;
+      margin-top: 20px;
+      margin-left: 15px;
 
+      /* Título del producto */
       .cardTitle {
         font-size: 1rem;
         font-weight: bold;
@@ -71,6 +76,7 @@
         margin-bottom: 0.25rem;
       }
 
+      /* Cantidad del producto */
       .cardText {
         font-size: 0.9rem;
         color: #6c757d;
@@ -82,6 +88,10 @@
         font-size: 0.85rem;
         color: #007bff;
         font-style: italic;
+        white-space: normal; /* Permitir que el texto se ajuste */
+        word-wrap: break-word; /* Dividir palabras largas si es necesario */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Opcional: indicar que el texto continúa */
       }
     }
   }
@@ -109,7 +119,7 @@ form {
     border: 1px solid #ccc;
 
     &:focus {
-      border-color: #007bff;
+      border-color: #007bff; /* Azul al enfocar */
       box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
     }
   }
@@ -120,17 +130,18 @@ form {
     border-radius: 4px;
     transition: all 0.3s ease;
 
+    /* Estilo para el botón azul */
     &.btn-success {
-      background-color: #28a745;
+      background-color: #007bff; /* Azul */
       color: #fff;
 
       &:hover {
-        background-color: #218838;
+        background-color: #0056b3; /* Azul oscuro */
       }
     }
 
     &.btn-secondary {
-      background-color: #6c757d;
+      background-color: #6c757d; /* Gris */
       color: #fff;
 
       &:hover {
@@ -138,4 +149,11 @@ form {
       }
     }
   }
+}
+
+/* Estilo para los encabezados de la sección */
+h4 {
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
 }

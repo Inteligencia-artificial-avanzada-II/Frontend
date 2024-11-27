@@ -255,7 +255,7 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
           Volver
         </button>
       </form>
-    </section>
+    </section>                                                                      
   );
 };
 
