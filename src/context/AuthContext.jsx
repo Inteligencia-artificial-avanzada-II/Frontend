@@ -22,9 +22,6 @@ export const AuthProvider = ({ children }) => {
       const userToken = response.data.data.token;
       const userRol = response.data.data.rolUsuario;
 
-      console.log(response.data.data);
-      console.log(userRol);
-
       setToken(userToken);
       setRolUsuario(userRol);
       setIsAuthenticated(true);
