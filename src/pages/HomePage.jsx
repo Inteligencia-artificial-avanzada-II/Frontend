@@ -11,11 +11,16 @@ const HomePage = () => {
     const [selectedProductId, setSelectedProductId] = useState('');
     const [productosDisponibles, setProductosDisponibles] = useState([]);
     const [listaPrioridad, setListaPrioridad] = useState([]);
-    const [alertFlag, setAlertFlag] = useState(null)
+    const [notifications, setNotifications] = useState([]);
     const apiOrdenUrl = `${getEnvironmentURL()}/orden`
     const apiProductoPrioritario = `${getEnvironmentURL()}/priorityproduct`
     const apiContenedorUrl = `${getEnvironmentURL()}/contenedor`
     const apiListaPrioridad = `${getEnvironmentURL()}/listaprioridadcontenedor`
+    const [ordenesInfoContenedores, setOrdenesInfoContenedores] = useState([])
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [totalContenedoresTransito, setTotalContenedoresTransito] = useState(0)
+    const [totalContenedoresDescargando, setTotalContenedoresDescargando] = useState(0)
+    const [totalContenedoresFosa, setTotalContenedoresFosa] = useState(0)
 
     const subirArchivo = async (event) => {
         if (event.target.files.length > 0) {
@@ -45,6 +50,61 @@ const HomePage = () => {
             }
         }
     };
+
+    const handleSelectOrder = (order) => {
+        setSelectedOrder(order); // Guarda la orden seleccionada
+    };
+
+    const fetchListaOrdenesContenedores = async () => {
+        const token = localStorage.getItem('token'); // Obtener el token de localStorage
+
+        if (!token) {
+            console.error("No se encontró el token en localStorage");
+            return;
+        }
+
+        try {
+            const responseOrdenesInfo = await axios.get(`${apiOrdenUrl}/obtenerOrdenesInfoContenedor`, {
+                headers: { Authorization: `Token ${token}` },
+            })
+
+            const listaInfoOrdenes = responseOrdenesInfo.data
+
+            setOrdenesInfoContenedores(listaInfoOrdenes)
+        } catch (error) {
+            console.log("Error al obtener la info de las órdenes: ", error)
+        }
+
+    }
+
+    const fetchContenedoresEstatus = async () => {
+        const token = localStorage.getItem('token'); // Obtener el token de localStorage
+
+        if (!token) {
+            console.error("No se encontró el token en localStorage");
+            return;
+        }
+        try {
+            const responseContenedorEstatus = await axios.get(`${apiContenedorUrl}/enTransitoDescargandoFosa`, {
+                headers: { Authorization: `Token ${token}` },
+            })
+
+            const listaInfoOrdenes = responseContenedorEstatus.data
+            const contenedoresTransito = listaInfoOrdenes.transito
+            const contenedoresDescargando = listaInfoOrdenes.descargando
+            const contenedoresFosa = listaInfoOrdenes.fosa.idContenedores
+
+            const contenedoresTransitoCount = contenedoresTransito?.length || 0;
+            const contenedoresDescargandoCount = contenedoresDescargando?.length || 0;
+            const contenedoresFosaCount = contenedoresFosa?.length || 0;
+
+            setTotalContenedoresTransito(contenedoresTransitoCount)
+            setTotalContenedoresDescargando(contenedoresDescargandoCount)
+            setTotalContenedoresFosa(contenedoresFosaCount)
+        } catch (error) {
+            console.log(`Lo sentimos, hubo un error al obtener los estatus de los contenedores: ${error}`)
+        }
+    }
 
     const fetchListaPrioridad = async () => {
         try {
@@ -88,7 +148,10 @@ const HomePage = () => {
         }
     };
 
-    // Conectar socket y escuchar eventos
+    const handleRemoveNotification = (id) => {
+        setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+    };
+
     useEffect(() => {
         const socket = connectSocket("frontend-admin");
 
@@ -98,10 +161,19 @@ const HomePage = () => {
 
         socket.on("puertaDesocupada", (data) => {
             console.log(`Evento recibido: Puerta ${data.idPuerta} desocupada.`);
-            const idPuerta = data.idPuerta
-            setAlertFlag(idPuerta)
-            // Llamar a fetchListaPrioridad para actualizar la lista
-            fetchListaPrioridad();
+
+            // Crear una nueva notificación con ID único
+            const newNotification = {
+                id: Date.now(), // ID único basado en el timestamp
+                message: `Se ha liberado una puerta. Favor de ubicar el contenedor con id: ${data.idContenedor} a la puerta ${data.idPuerta}.`,
+            };
+
+            setNotifications((prev) => [...prev, newNotification]);
+
+            // Eliminar automáticamente la notificación después de 5 segundos
+            setTimeout(() => {
+                handleRemoveNotification(newNotification.id);
+            }, 20000);
         });
 
         return () => {
@@ -110,9 +182,19 @@ const HomePage = () => {
     }, []);
 
     useEffect(() => {
-        // Llamar inicialmente para cargar la lista
-        fetchListaPrioridad();
-    }, []);
+        const fetchData = async () => {
+            try {
+                await fetchListaPrioridad();
+                await fetchListaOrdenesContenedores();
+                await fetchContenedoresEstatus();
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData(); // Llamar a la función asíncrona
+    }, [notifications]);
+
 
     useEffect(() => {
         const fetchProductosDisponibles = async () => {
@@ -184,76 +266,137 @@ const HomePage = () => {
                 <div className="col-12 col-md-4 px-3 mb-4">
                     <div className={`${styles.camionesEstatusCard} ${styles.camionesEnTransito}`}>
                         <div className={styles.icon}>
-                            <i className='bx bx-navigation bx-md'></i>
+                            <i className='bx bxs-truck bx-fade-right bx-md'></i>
                         </div>
                         <div>
                             <h5 className={styles.title}>Camiones en tránsito</h5>
-                            <p className={styles.number}>18</p>
+                            <p className={styles.number}>{totalContenedoresTransito}</p>
                         </div>
                     </div>
                 </div>
                 <div className="col-12 col-md-4 px-3 mb-4">
                     <div className={`${styles.camionesEstatusCard} ${styles.camionesEnPatio}`}>
                         <div className={styles.icon}>
-                            <i className="bx bx-loader bx-md"></i>
+                            <i className="bx bxs-truck bx-md"></i>
                         </div>
                         <div>
                             <h5 className={styles.title}>Camiones en patio</h5>
-                            <p className={styles.number}>12</p>
+                            <p className={styles.number}>{totalContenedoresFosa}</p>
                         </div>
                     </div>
                 </div>
                 <div className="col-12 col-md-4 px-3 mb-4">
                     <div className={`${styles.camionesEstatusCard} ${styles.camionesEnDescarga}`}>
                         <div className={styles.icon}>
-                            <i className="bx bx-cart-download bx-md"></i>
+                            <i className="bx bxs-box bx-fade-down bx-md"></i>
                         </div>
                         <div>
                             <h5 className={styles.title}>Camiones en descarga</h5>
-                            <p className={styles.number}>6</p>
+                            <p className={styles.number}>{totalContenedoresDescargando}</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div className={`${styles.containerPrioridadModelo} d-flex justify-content-evenly px-3 row`}>
                 <div className={`col-12 col-md-4 px-3 py-2 ${styles.listaOrdenCamiones}`}>
+                    <div className="col-12 d-flex justify-content-end">
+                        <button
+                            className={`${styles.reloadButton} btn btn-custom`}
+                            onClick={fetchListaOrdenesContenedores}
+                            title="Recargar"
+                        >
+                            <i className="bx bx-revision bx-spin bx-sm"></i>
+                        </button>
+                    </div>
                     <ul className="list-unstyled">
-                        {[
-                            { id: 1, placas: 'idContenedor1', sku: 'SKU1', puerta: 'En zona de espera A' },
-                            { id: 2, placas: 'idContenedor2', sku: 'SKU2', puerta: 'En zona de espera B' },
-                            { id: 3, placas: 'idContenedor3', sku: 'SKU3', puerta: 'En zona de espera C' },
-                            { id: 4, placas: 'idContenedor4', sku: 'SKU4', puerta: 'En zona de espera D' },
-                            { id: 5, placas: 'idContenedor5', sku: 'SKU5', puerta: 'En zona de espera A' },
-                            { id: 6, placas: 'idContenedor6', sku: 'SKU6', puerta: 'En tránsito' },
-                            { id: 7, placas: 'idContenedor7', sku: 'SKU7', puerta: 'Puerta 3' },
-                            { id: 8, placas: 'idContenedor8', sku: 'SKU8', puerta: 'Puerta 6' },
-                            { id: 9, placas: 'idContenedor9', sku: 'SKU9', puerta: 'En zona de espera B' },
-                            { id: 10, placas: 'idContenedor10', sku: 'SKU10', puerta: 'En zona de espera C' },
-                            { id: 11, placas: 'idContenedor11', sku: 'SKU11', puerta: 'Puerta 8' },
-                            { id: 12, placas: 'idContenedor12', sku: 'SKU12', puerta: 'En zona de espera D' },
-                            { id: 13, placas: 'idContenedor13', sku: 'SKU13', puerta: 'En tránsito' },
-                            { id: 14, placas: 'idContenedor14', sku: 'SKU14', puerta: 'Puerta 11' },
-                            { id: 15, placas: 'idContenedor15', sku: 'SKU15', puerta: 'En zona de espera A' },
-                            { id: 16, placas: 'idContenedor16', sku: 'SKU16', puerta: 'En zona de espera B' },
-                            { id: 17, placas: 'idContenedor17', sku: 'SKU17', puerta: 'En zona de espera C' },
-                            { id: 18, placas: 'idContenedor18', sku: 'SKU18', puerta: 'Puerta 5' },
-                            { id: 19, placas: 'idContenedor19', sku: 'SKU19', puerta: 'En tránsito' },
-                            { id: 20, placas: 'idContenedor20', sku: 'SKU20', puerta: 'En zona de espera D' }
-                        ]
-                            .map((camion) => (
-                                <li key={camion.id} className={`d-flex justify-content-between align-items-center mb-3 row ${styles.itemCamion}`}>
-                                    <div className={`${styles.numeroCamion} col`}>
-                                        {camion.id}
-                                    </div>
-                                    <div className="flex-grow-1 ms-3 col">
-                                        <div>{camion.placas}</div>
-                                    </div>
-                                    <div className={`${styles.puertaCamion} col`}>
-                                        {camion.puerta}
-                                    </div>
-                                </li>
-                            ))}
+                        {ordenesInfoContenedores.map((camion) => (
+                            <li
+                                key={camion.idOrden}
+                                className={`d-flex justify-content-between align-items-center mb-3 row ${styles.itemCamion}`}
+                                onClick={() => handleSelectOrder(camion)} // Configura el contenedor seleccionado
+                                data-bs-toggle="modal"
+                                data-bs-target="#orderDetailsModal"
+                                style={{ cursor: "pointer" }} // Añade un cursor de pointer
+                            >
+                                <div className={`${styles.numeroCamion} col`}>
+                                    {camion.idContenedor}
+                                </div>
+                                <div className="flex-grow-1 ms-3 col">
+                                    <div>{`${camion.contenedor.tipo}-${camion.contenedor.capacidad}`}</div>
+                                </div>
+                                <div className={`${styles.puertaCamion} col`}>
+                                    {camion.origen}
+                                </div>
+                            </li>
+                        ))}
                     </ul>
+
+                    {/* Modal dinámico */}
+                    <div
+                        className="modal fade"
+                        id="orderDetailsModal"
+                        tabIndex="-1"
+                        aria-labelledby="orderDetailsModalLabel"
+                        aria-hidden="true"
+                    >
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="orderDetailsModalLabel">
+                                        Detalles del Contenedor
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                    ></button>
+                                </div>
+                                <div className="modal-body">
+                                    {selectedOrder ? (
+                                        <>
+                                            <p>
+                                                <strong>ID Orden:</strong> {selectedOrder.idOrden}
+                                            </p>
+                                            <p>
+                                                <strong>Origen:</strong> {selectedOrder.origen}
+                                            </p>
+                                            <p>
+                                                <strong>Contenedor:</strong> {selectedOrder.contenedor.tipo}
+                                            </p>
+                                            <p>
+                                                <strong>Capacidad:</strong> {selectedOrder.contenedor.capacidad}
+                                            </p>
+                                            <p>
+                                                <strong>Posición en patio:</strong> {selectedOrder.posicionPatio ? selectedOrder.posicionPatio : "No se ha actualizado la posición en el patio"}
+                                            </p>
+                                            <p>
+                                                <strong>Productos:</strong>
+                                            </p>
+                                            <ul>
+                                                {selectedOrder.idMongoProductos.products.map((product) => (
+                                                    <li key={product._id}>
+                                                        {product.itemDescription} - Cantidad: {product.requestedQuantity}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                    ) : (
+                                        <p>Cargando detalles...</p>
+                                    )}
+                                </div>
+                                <div className="modal-footer">
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        data-bs-dismiss="modal"
+                                    >
+                                        Cerrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className={`col-12 col-md-8 px-3 ${styles.modeloPrioridad}`}>
                     <div className="row">
@@ -272,15 +415,25 @@ const HomePage = () => {
                                 )}
                             </div>
                             <div className="col-12 p-3">
-                                <h3 className={styles.titulo}>LISTA DE PRIORIDAD</h3>
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <h3 className={styles.titulo}>LISTA DE PRIORIDAD</h3>
+                                    <button
+                                        className={`${styles.reloadButton} btn btn-custom`}
+                                        onClick={fetchListaPrioridad}
+                                        title="Recargar"
+                                    >
+                                        <i className='bx bx-revision bx-spin bx-sm'></i>
+                                    </button>
+                                </div>
                                 <ul className={styles.lista}>
-                                    {listaPrioridad
-                                        .map((contenedor, index) => (
-                                            <li key={contenedor.idContenedor} className={styles.item}>
-                                                <span className={styles.prioridad}>Prioridad {index + 1}:</span>
-                                                <span className={styles.detalle}>{`Id de Contenedor: ${contenedor.idContenedor}`} - {contenedor.tipo}</span>
-                                            </li>
-                                        ))}
+                                    {listaPrioridad.map((contenedor, index) => (
+                                        <li key={contenedor.idContenedor} className={styles.item}>
+                                            <span className={styles.prioridad}>Prioridad {index + 1}:</span>
+                                            <span className={styles.detalle}>
+                                                {`Id de Contenedor: ${contenedor.idContenedor}`} - {contenedor.tipo}
+                                            </span>
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>
@@ -320,6 +473,25 @@ const HomePage = () => {
                                 ) : (
                                     <p style={{ color: '#888' }}>No hay productos prioritarios agregados.</p>
                                 )}
+                            </div>
+                            <div className="col-12">
+                                <div className={`${styles.notificationsContainer}`}>
+                                    {notifications.map((notif) => (
+                                        <div
+                                            key={notif.id}
+                                            className={`${styles.notification} alert alert-info`}
+                                        >
+                                            <span>{notif.message}</span>
+                                            <button
+                                                className="btn-close"
+                                                onClick={() => handleRemoveNotification(notif.id)}
+                                                style={{ marginLeft: "10px" }}
+                                            >
+                                                &times;
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>

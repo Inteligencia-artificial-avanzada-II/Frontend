@@ -166,6 +166,14 @@
             margin-bottom: 1rem;
         }
 
+        .reloadButton {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #004aad; // Color principal
+                text-align: center;
+                margin-bottom: 1rem;
+        }
+
         .lista {
             list-style: none;
             padding: 0;
@@ -247,5 +255,24 @@
             color: #343a40;
             font-size: 0.9rem;
         }
+
+        .notificationsContainer {
+            max-height: 200px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .notification {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
     }
 }
