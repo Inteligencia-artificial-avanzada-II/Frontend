@@ -1,35 +1,48 @@
+// Importaciones necesarias
+// - useEffect, useState: Hooks de React para manejar estado y efectos secundarios.
+// - styles: Archivo SCSS modular para los estilos del componente.
+// - getEnvironmentURL: Función para obtener la URL base según el entorno.
+// - axios: Biblioteca para realizar solicitudes HTTP.
+// - connectSocket, disconnectSocket: Funciones para manejar la conexión con el servidor Socket.IO.
 import { useEffect, useState } from "react";
 import styles from "../styles/styles-homepage.module.scss"
 import { getEnvironmentURL } from "../utils/getUrl";
 import axios from "axios";
 import { connectSocket, disconnectSocket } from "../utils/socketIO";
 
+// Renderiza la página inicial para el administrador (Dashboard)
 const HomePage = () => {
-    const [archivoSubido, setArchivoSubido] = useState(false);
-    const [priorityProducts, setPriorityProducts] = useState([]);
-    const [priorityProductsGet, setPriorityProductsGet] = useState([])
-    const [selectedProductId, setSelectedProductId] = useState('');
-    const [productosDisponibles, setProductosDisponibles] = useState([]);
-    const [listaPrioridad, setListaPrioridad] = useState([]);
-    const [notifications, setNotifications] = useState([]);
-    const apiOrdenUrl = `${getEnvironmentURL()}/orden`
-    const apiProductoPrioritario = `${getEnvironmentURL()}/priorityproduct`
-    const apiContenedorUrl = `${getEnvironmentURL()}/contenedor`
-    const apiListaPrioridad = `${getEnvironmentURL()}/listaprioridadcontenedor`
-    const [ordenesInfoContenedores, setOrdenesInfoContenedores] = useState([])
-    const [selectedOrder, setSelectedOrder] = useState(null);
-    const [totalContenedoresTransito, setTotalContenedoresTransito] = useState(0)
-    const [totalContenedoresDescargando, setTotalContenedoresDescargando] = useState(0)
-    const [totalContenedoresFosa, setTotalContenedoresFosa] = useState(0)
+    // Definición de estados locales
+    const [archivoSubido, setArchivoSubido] = useState(false); // Indica si se subió un archivo exitosamente.
+    const [priorityProducts, setPriorityProducts] = useState([]); // Productos prioritarios seleccionados.
+    const [priorityProductsGet, setPriorityProductsGet] = useState([]) // Productos prioritarios recuperados de la API.
+    const [selectedProductId, setSelectedProductId] = useState(''); // Producto seleccionado para añadir.
+    const [productosDisponibles, setProductosDisponibles] = useState([]); // Lista de productos disponibles.
+    const [listaPrioridad, setListaPrioridad] = useState([]); // Lista de contenedores con prioridad.
+    const [notifications, setNotifications] = useState([]); // Lista de notificaciones.
 
+    // URLs base para las APIs
+    const apiOrdenUrl = `${getEnvironmentURL()}/orden`;
+    const apiProductoPrioritario = `${getEnvironmentURL()}/priorityproduct`;
+    const apiContenedorUrl = `${getEnvironmentURL()}/contenedor`;
+    const apiListaPrioridad = `${getEnvironmentURL()}/listaprioridadcontenedor`;
+
+    const [ordenesInfoContenedores, setOrdenesInfoContenedores] = useState([]); // Información de órdenes y contenedores.
+    const [selectedOrder, setSelectedOrder] = useState(null); // Orden seleccionada para detalles
+    const [totalContenedoresTransito, setTotalContenedoresTransito] = useState(0); // Contenedores en tránsito.
+    const [totalContenedoresDescargando, setTotalContenedoresDescargando] = useState(0); // Contenedores en descarga.
+    const [totalContenedoresFosa, setTotalContenedoresFosa] = useState(0); // Contenedores en fosa.
+
+    // Función para subir un archivo al bucket
     const subirArchivo = async (event) => {
         if (event.target.files.length > 0) {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token'); // Recupera el token desde localStorage.
             const archivo = event.target.files[0];
             const formData = new FormData();
-            formData.append('file', archivo);
+            formData.append('file', archivo); // Añade el archivo al objeto FormData.
 
             try {
+                // Petición para poder subir el archivo al bucket
                 const responseUpload = await axios.post(`${apiOrdenUrl}/csvUpload`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -51,25 +64,31 @@ const HomePage = () => {
         }
     };
 
+    // Función para manejar la selección de una orden
     const handleSelectOrder = (order) => {
         setSelectedOrder(order); // Guarda la orden seleccionada
     };
 
+    // Función para obtener la lista de órdenes con información de contenedores
     const fetchListaOrdenesContenedores = async () => {
         const token = localStorage.getItem('token'); // Obtener el token de localStorage
 
+        // Si no se encuentra el token, detenemos la ejecución y mostramos mensaje de error
         if (!token) {
             console.error("No se encontró el token en localStorage");
             return;
         }
 
         try {
+            // Solicitud para obtener todas las ordenes con la información de sus contenedores
             const responseOrdenesInfo = await axios.get(`${apiOrdenUrl}/obtenerOrdenesInfoContenedor`, {
                 headers: { Authorization: `Token ${token}` },
             })
 
+            // Obtenemos la respuesta de la petición anterior
             const listaInfoOrdenes = responseOrdenesInfo.data
 
+            // Actualizamos la variable con la información de las órdenes y sus contenedores
             setOrdenesInfoContenedores(listaInfoOrdenes)
         } catch (error) {
             console.log("Error al obtener la info de las órdenes: ", error)
@@ -77,27 +96,33 @@ const HomePage = () => {
 
     }
 
+    // Función para obtener el estatus de los contenedores
     const fetchContenedoresEstatus = async () => {
         const token = localStorage.getItem('token'); // Obtener el token de localStorage
 
+        // Si no se encuentra el token, detenemos la ejecución y mostramos mensaje de error
         if (!token) {
             console.error("No se encontró el token en localStorage");
             return;
         }
         try {
+            // Solicitud para obtener los contenedores con sus estatus (En tránsito, Descargando o En fosa)
             const responseContenedorEstatus = await axios.get(`${apiContenedorUrl}/enTransitoDescargandoFosa`, {
                 headers: { Authorization: `Token ${token}` },
             })
 
+            // Declaramos las variables con la información que nos devuelve la solicitud
             const listaInfoOrdenes = responseContenedorEstatus.data
             const contenedoresTransito = listaInfoOrdenes.transito
             const contenedoresDescargando = listaInfoOrdenes.descargando
             const contenedoresFosa = listaInfoOrdenes.fosa.idContenedores
 
+            // Obtenemos la cantidad de contenedores que tenemos, ya que mostramos únicamente la cantidad y en caso de que no haya datos, se devuelve un "0"
             const contenedoresTransitoCount = contenedoresTransito?.length || 0;
             const contenedoresDescargandoCount = contenedoresDescargando?.length || 0;
             const contenedoresFosaCount = contenedoresFosa?.length || 0;
 
+            // Actualizamos las variables con el total de contenedores por cada estado (En tránsito, Descargando o En fosa)
             setTotalContenedoresTransito(contenedoresTransitoCount)
             setTotalContenedoresDescargando(contenedoresDescargandoCount)
             setTotalContenedoresFosa(contenedoresFosaCount)
@@ -106,8 +131,10 @@ const HomePage = () => {
         }
     }
 
+    // Función para recargar datos principales
     const fetchActualizarDataAllInfo = async () => {
         try {
+            // Mandamos a llamar las funciones para que se vuelvan a obtener los datos, realizando las peticiones
             await fetchListaOrdenesContenedores();
             await fetchListaPrioridad();
             await fetchContenedoresEstatus();
@@ -116,29 +143,33 @@ const HomePage = () => {
         }
     }
 
+    // Función para obtener la lista de prioridad
     const fetchListaPrioridad = async () => {
         try {
 
             const token = localStorage.getItem('token'); // Obtener el token de localStorage
 
+            // Si no existe el token, finalizamos la ejecución e imprimos el error en la consola
             if (!token) {
                 console.error("No se encontró el token en localStorage");
                 return;
             }
 
-            // Hacer la solicitud GET a la API
+            // Hacer la solicitud GET a la API para obtener todos los productos que haya en lista prioridad
             const responseListaPrioridad = await axios.get(`${apiListaPrioridad}/consultarTodos`, {
                 headers: { Authorization: `Token ${token}` },
             });
 
             // Verificar la respuesta
             if (responseListaPrioridad && responseListaPrioridad.data) {
-                const contenedores = responseListaPrioridad.data.data[0].contenedores;
+                const contenedores = responseListaPrioridad.data.data[0].contenedores; // Obtenemos los datos que nos regresa la petición
+                // Validamos que contenedores contenga datos
                 if (contenedores) {
                     const dataContenedoresList = {
                         contenedoresList: contenedores, // Lista de IDs de contenedores
                     };
 
+                    // Solicitud para obtener los contenedores que se encuentren en nuestra lista de prioridad brindada por el modelo
                     const responseContenedoresInfo = await axios.post(
                         `${apiContenedorUrl}/obtenerContenedoresList`,
                         dataContenedoresList,
@@ -147,8 +178,10 @@ const HomePage = () => {
                         }
                     );
 
+                    // Guardamos la respuesta de nuestra petición en una variable para validar que se guarde
                     const contenedoresInfoList = responseContenedoresInfo.data.data;
 
+                    // Actualizamos nuestra variable con la lista de los contenedores
                     setListaPrioridad(contenedoresInfoList); // Actualizamos el estado de nuestra lista prioridad
                 }
             } else {
@@ -159,17 +192,22 @@ const HomePage = () => {
         }
     };
 
+    // Función para manejar la eliminación de una notificación
     const handleRemoveNotification = (id) => {
         setNotifications((prev) => prev.filter((notif) => notif.id !== id));
     };
 
+    // useEffect para manejar la conexión del socket
     useEffect(() => {
+        // ID único para enviar al socket de nuestro backend
         const socket = connectSocket("frontend-admin");
 
+        // Recibe el mensaje de conexión desde el socket de nuestro back para confirmar que la conexión fue exitosa
         socket.on("connect", () => {
             console.log("Socket conectado como frontend-admin.");
         });
 
+        // Recibe el mensaje cuando una puerta se desocupa para mostrar la notificación
         socket.on("puertaDesocupada", (data) => {
             console.log(`Evento recibido: Puerta ${data.idPuerta} desocupada.`);
 
@@ -179,6 +217,7 @@ const HomePage = () => {
                 message: `Se ha liberado una puerta. Favor de ubicar el contenedor con id: ${data.idContenedor} a la puerta ${data.idPuerta}.`,
             };
 
+            // Actualizamos nuestra variable con las nuevas notificaciones
             setNotifications((prev) => [...prev, newNotification]);
 
             // Eliminar automáticamente la notificación después de 5 segundos
@@ -188,13 +227,15 @@ const HomePage = () => {
         });
 
         return () => {
-            disconnectSocket();
+            disconnectSocket(); // Se desconecta del socket una vez que ya no se está visualizando ese componente
         };
     }, []);
 
+    // useEffect para cargar datos iniciales
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Ejecutamos nuestras funciones al cargar el componente
                 await fetchListaPrioridad();
                 await fetchListaOrdenesContenedores();
                 await fetchContenedoresEstatus();
@@ -204,18 +245,21 @@ const HomePage = () => {
         };
 
         fetchData(); // Llamar a la función asíncrona
-    }, [notifications]);
+    }, [notifications]); // Este componente depende la variable notifications
 
 
+    // useEffect para obtener los productos disponibles desde la API
     useEffect(() => {
         const fetchProductosDisponibles = async () => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token'); // Recupera el token del localStorage.
             try {
+                // Solicitud GET a la API para obtener el inventario de fábrica.
                 const response = await axios.get(`${getEnvironmentURL()}/inventariofabrica/consultarTodos`, {
                     headers: { "Authorization": `Token ${token}` },
                 });
+                // Verifica si la respuesta contiene datos y actualiza el estado.
                 if (response.data && response.data.length > 0) {
-                    setProductosDisponibles(response.data);
+                    setProductosDisponibles(response.data); // Actualiza el estado con los productos disponibles.
                 } else {
                     console.log("La respuesta de la API está vacía o no contiene datos.");
                 }
@@ -223,53 +267,63 @@ const HomePage = () => {
                 console.error("Error al obtener productos disponibles", error);
             }
         };
-        fetchProductosDisponibles();
-    }, []);
+        fetchProductosDisponibles(); // Llama a la función al cargar el componente.
+    }, []); // El efecto se ejecuta solo una vez al cargar la página.
 
+    // Maneja la acción de agregar un producto prioritario
     const handleAgregarProducto = () => {
+        // Busca el producto seleccionado en la lista de productos disponibles.
         const productoSeleccionado = productosDisponibles.find(producto => producto.id === parseInt(selectedProductId));
+        // Verifica que el producto no esté ya en la lista de productos prioritarios antes de agregarlo.
         if (productoSeleccionado && !priorityProducts.some(prod => prod.id === productoSeleccionado.id)) {
-            setPriorityProducts([...priorityProducts, productoSeleccionado]);
-            setSelectedProductId('');
+            setPriorityProducts([...priorityProducts, productoSeleccionado]); // Agrega el producto al estado.
+            setSelectedProductId(''); // Resetea la selección.
         }
     };
 
+    // Maneja la acción de eliminar un producto prioritario
     const handleEliminarProducto = (id) => {
+        // Filtra el producto con el ID proporcionado de la lista de productos prioritarios.
         setPriorityProducts(priorityProducts.filter(producto => producto.id !== id));
     };
 
+    // useEffect para obtener los productos prioritarios desde la API
     useEffect(() => {
         const fetchPriorityProducts = async () => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token'); // Recupera el token del localStorage.
             try {
+                // Solicitud para obtener los productos prioritarios
                 const response = await axios.get(`${apiProductoPrioritario}/consultarTodos`, {
                     headers: { "Authorization": `Token ${token}` },
                 });
+                // Actualiza el estado con la lista de productos prioritarios recuperados.
                 const products = response.data.data?.products || [];
                 setPriorityProductsGet(products);
             } catch (error) {
                 console.error("Error al obtener los productos prioritarios", error);
             }
         };
-        fetchPriorityProducts();
-    }, []);
+        fetchPriorityProducts(); // Llama a la función al montar el componente.
+    }, []); // El efecto se ejecuta solo una vez al montar el componente.
 
-    // Función para actualizar los productos prioritarios en la base de datos cuando `priorityProducts` cambia
+    // useEffect para actualizar los productos prioritarios en la base de datos
     useEffect(() => {
+        // Verifica si hay cambios en la lista de productos prioritarios antes de realizar la llamada.
         if (priorityProducts.length >= 0) { // Solo hace la llamada si hay cambios en `priorityProducts`
-            const token = localStorage.getItem('token');
-            const urlCrearPriorityProduct = `${apiProductoPrioritario}/crear`;
+            const token = localStorage.getItem('token'); // Recupera el token del localStorage.
+            const urlCrearPriorityProduct = `${apiProductoPrioritario}/crear`; // URL para crear productos prioritarios.
 
+            // Realizamos la solicitud para enviar los productos prioritarios
             axios
                 .post(urlCrearPriorityProduct, { products: priorityProducts }, { headers: { "Authorization": `Token ${token}` } })
                 .then((response) => {
-                    setPriorityProductsGet(priorityProducts);
+                    setPriorityProductsGet(priorityProducts); // Actualiza el estado con los productos enviados.
                 })
                 .catch((error) => {
                     console.error("Error al actualizar los productos prioritarios:", error);
                 });
         }
-    }, [priorityProducts]);
+    }, [priorityProducts]); // El efecto se ejecuta cada vez que cambia `priorityProducts`.
 
     return (
         <>

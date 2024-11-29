@@ -1,3 +1,9 @@
+// Importaciones necesarias
+// - useState: Hook de React para manejar el estado local.
+// - BrowserRouter, Routes, Route, Navigate: Componentes de react-router-dom para manejar la navegación.
+// - useAuth: Hook personalizado para acceder al contexto de autenticación.
+// - Componentes personalizados: Rutas protegidas, rutas públicas, páginas y el Sidebar.
+// - styles: Archivo SCSS modular para los estilos personalizados.
 import { useState } from "react";
 import {
   BrowserRouter as Router,
@@ -20,21 +26,26 @@ import HistoricPage from "../pages/HistoricoPage/HistoricPage";
 import HistoricoAdmin from "../pages/HistoricoPageAdmin/HistoricoAdmin"; // Importa el nuevo componente
 import Reportes from "../pages/ReportesAdmin/Reportes";
 
+// Maneja todas las rutas de la aplicación, incluyendo rutas públicas, protegidas y la estructura de layout.
 const AppRouter = () => {
+  // Acceso al estado de autenticación mediante el contexto.
   const { isAuthenticated, loading, rolUsuario } = useAuth(); // Obtenemos isAuthenticated y loading
+  // Estado para manejar el estado del Sidebar en dispositivos móviles.
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Función para alternar el estado del Sidebar (mostrar/ocultar).
   const botonPresionado = () => {
     setSidebarOpen(!sidebarOpen); // Alterna el sidebar
   };
 
-  // Si loading es true, mostramos una pantalla de carga
+  // Si la aplicación está en estado de carga, mostramos un mensaje de "Cargando".
   if (loading) {
     return <div>Cargando...</div>;
   }
 
   return (
     <Router>
+      {/* Contenedor principal de la aplicación */}
       <div className="container-fluid">
         <div className="row">
           {/* Botón de menú visible solo en dispositivos móviles */}
@@ -63,7 +74,7 @@ const AppRouter = () => {
             </div>
           ) : null}
 
-          {/* Contenido principal */}
+          {/* Contenedor principal del contenido */}
           <main
             className={`${
               isAuthenticated
@@ -82,7 +93,7 @@ const AppRouter = () => {
                 }
               />
 
-              {/* Ruta protegida: Página de inicio (HomePage) */}
+              {/* Ruta protegida: Página de inicio para Administradores */}
               <Route
                 path="/home"
                 element={
@@ -92,6 +103,7 @@ const AppRouter = () => {
                 }
               />
 
+              {/* Ruta protegida: Página de Ordenes */}
               <Route
                 path="/order"
                 element={
@@ -101,6 +113,7 @@ const AppRouter = () => {
                 }
               />
 
+              {/* Ruta protegida: Página de Histórico de Órdenes */}
               <Route
                 path="/historicoor"
                 element={
@@ -110,7 +123,7 @@ const AppRouter = () => {
                 }
               />
 
-              {/* Nueva ruta protegida para HistoricoAdmin */}
+              {/* Ruta protegida: Histórico para Administradores */}
               <Route
                 path="/historicoadmin"
                 element={
@@ -120,7 +133,7 @@ const AppRouter = () => {
                 }
               />
 
-              {/* Nueva ruta protegida para Reportes */}
+              {/* Ruta protegida: Reportes para Administradores */}
               <Route
                 path="/reportes"
                 element={
@@ -130,7 +143,7 @@ const AppRouter = () => {
                 }
               />
 
-              {/* Redirigir cualquier otra URL dependiendo de la autenticación */}
+              {/* Redirigir rutas desconocidas según la autenticación */}
               <Route
                 path="*"
                 element={<Navigate to={isAuthenticated ? "/home" : "/"} replace />}

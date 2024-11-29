@@ -1,3 +1,11 @@
+// Importaciones de librerías necesarias
+// - `PropTypes`: Validación de tipos para las props.
+// - `useState` y `useEffect`: Manejo del estado y efectos secundarios.
+// - `axios`: Para realizar solicitudes HTTP.
+// - `Swal`: Para mostrar alertas personalizadas.
+// - `Toastify`: Para mostrar notificaciones estilo toast.
+// - `styles`: Archivo SCSS modular para los estilos del componente.
+// - `getEnvironmentURL`: Función auxiliar para obtener la URL base de las APIs.
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -7,33 +15,40 @@ import "toastify-js/src/toastify.css";
 import styles from "../styles/styles-orderdetailformcomp.module.scss";
 import { getEnvironmentURL } from "../utils/getUrl";
 
+// Renderiza un formulario para completar detalles de un pedido y enviarlo.
 const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }) => {
-  const [orderNumber, setOrderNumber] = useState("");
-  const [origenPedido, setOrigenPedido] = useState("");
-  const [fechaSalida, setFechaSalida] = useState("");
-  const [vehicle, setVehicle] = useState("");
-  const [container, setContainer] = useState("");
-  const [distributionCenter, setDistributionCenter] = useState("");
-  const [availableVehicles, setAvailableVehicles] = useState([]);
-  const [availableContainers, setAvailableContainers] = useState([]);
-  const [availableCedis, setAvailableCedis] = useState([]);
+  // Estados locales para manejar los datos ingresados por el usuario y los valores dinámicos.
+  const [orderNumber, setOrderNumber] = useState(""); // Número de orden ingresado.
+  const [origenPedido, setOrigenPedido] = useState(""); // Origen del pedido.
+  const [fechaSalida, setFechaSalida] = useState(""); // Fecha y hora de salida.
+  const [vehicle, setVehicle] = useState(""); // Vehículo seleccionado.
+  const [container, setContainer] = useState(""); // Contenedor seleccionado.
+  const [distributionCenter, setDistributionCenter] = useState(""); // Centro de distribución seleccionado.
+  const [availableVehicles, setAvailableVehicles] = useState([]); // Lista de vehículos disponibles.
+  const [availableContainers, setAvailableContainers] = useState([]); // Lista de contenedores disponibles.
+  const [availableCedis, setAvailableCedis] = useState([]); // Lista de centros de distribución disponibles.
 
+  // Construcción de las URLs para las APIs usando una función auxiliar.
   const apiUrlContenedor = `${getEnvironmentURL()}/contenedor`;
   const apiUrlCamion = `${getEnvironmentURL()}/camion`;
   const apiUrlCedis = `${getEnvironmentURL()}/cedis`;
   const apiUrlOrden = `${getEnvironmentURL()}/orden`;
 
+  // Función para generar los headers de autorización con el token del usuario.
   const getAuthHeader = () => {
-    const token = localStorage.getItem("token");
-    return { Authorization: `Token ${token}` };
+    const token = localStorage.getItem("token"); // Obtiene el token del localStorage.
+    return { Authorization: `Token ${token}` }; // Devuelve el encabezado listo para usar.
   };
 
+  // useEffect para cargar la lista de vehículos disponibles al montar el componente
   useEffect(() => {
     const fetchAvailableVehicles = async () => {
       try {
+        // Petición para obtener los vehículos que se encuentren disponibles
         const response = await axios.get(`${apiUrlCamion}/disponibles`, {
-          headers: getAuthHeader(),
+          headers: getAuthHeader(), // Incluye el encabezado de autenticación.
         });
+        // Actualiza el estado con la lista de vehículos obtenida.
         setAvailableVehicles(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("Error al obtener los camiones disponibles:", error);
@@ -42,12 +57,15 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
     fetchAvailableVehicles();
   }, []);
 
+  // useEffect para cargar la lista de contenedores disponibles al montar el componente
   useEffect(() => {
     const fetchAvailableContainers = async () => {
       try {
+        // Petición para obtener la lista con los contenedores disponibles
         const response = await axios.get(`${apiUrlContenedor}/disponibles`, {
           headers: getAuthHeader(),
         });
+        // Actualiza el estado con la lista de contenedores obtenida.
         setAvailableContainers(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("Error al obtener los contenedores disponibles:", error);
@@ -56,12 +74,15 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
     fetchAvailableContainers();
   }, []);
 
+  // useEffect para cargar la lista de centros de distribución (CEDIS) disponibles al montar el componente.
   useEffect(() => {
     const fetchAvailableCedis = async () => {
       try {
+        // Petición para consultar todos los cedis que existan en nuestra base de datos
         const response = await axios.get(`${apiUrlCedis}/consultarTodos`, {
           headers: getAuthHeader(),
         });
+        // Actualiza el estado con la lista de centros de distribución obtenida.
         setAvailableCedis(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("Error al obtener los centros de distribución (CEDIS):", error);
@@ -70,9 +91,11 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
     fetchAvailableCedis();
   }, []);
 
+  // Maneja el envío del formulario, realiza validaciones y envía los datos a la API.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Muestra una alerta de confirmación antes de procesar el pedido.
     Swal.fire({
       title: "¿Estás seguro/a?",
       icon: "question",
@@ -82,6 +105,7 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
       cancelButtonText: "No",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        // Construye los datos en formato JSON para enviar a la API.
         const createdBy = localStorage.getItem("token");
         const jsonFinal = {
           sqlData: {
@@ -108,7 +132,9 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
         };
 
         try {
+          // Envía los datos a la API para registrar el pedido.
           await axios.post(`${apiUrlOrden}/crear`, jsonFinal, { headers: getAuthHeader() });
+          // Muestra una notificación de éxito al usuario.
           Toastify({
             text: "Pedido finalizado",
             duration: 3000,
@@ -118,6 +144,7 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
               background: "linear-gradient(to right, #4CAF50, #008000)",
             },
           }).showToast();
+          // Limpia los productos seleccionados después de enviar el pedido.
           clearSelectedProducts();
         } catch (error) {
           console.error("Error al enviar el pedido:", error);
@@ -128,29 +155,31 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
 
   return (
     <section className="col-12">
+      {/* Título de la sección */}
       <h4 className="mb-4">Resumen de Pedido</h4>
 
+      {/* Renderizado de los productos seleccionados */}
       <div className={styles.horizontalScrollContainer}>
-  {selectedProducts.map((product) => (
-    <div className={`card ${styles.card}`} key={product.id}>
-      {/* Contenedor de la imagen */}
-      <div className={styles.imageContainer}>
-        <img src={product.imagen} alt={product.botana} />
+        {selectedProducts.map((product) => (
+          <div className={`card ${styles.card}`} key={product.id}>
+            {/* Contenedor de la imagen */}
+            <div className={styles.imageContainer}>
+              <img src={product.imagen} alt={product.botana} />
+            </div>
+            {/* Contenedor de la información */}
+            <div className={styles.infoContainer}>
+              <h5 className={styles.cardTitle}>{product.botana}</h5>
+              <p className={styles.cardText}>Cantidad: {product.cantidadAgregada}</p>
+              {/* Descripción adicional */}
+              <p className={styles.cardDescription}>
+                {product.selectedOption || "No seleccionado"}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
-      {/* Contenedor de la información */}
-      <div className={styles.infoContainer}>
-        <h5 className={styles.cardTitle}>{product.botana}</h5>
-        <p className={styles.cardText}>Cantidad: {product.cantidadAgregada}</p>
-        {/* Descripción adicional */}
-        <p className={styles.cardDescription}>
-          {product.selectedOption || "No seleccionado"}
-        </p>
-      </div>
-    </div>
-  ))}
-</div>
 
-
+      {/* Formulario para ingresar detalles del pedido */}
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mb-3 row">
           <div className="col-12 col-lg-4">
@@ -261,10 +290,11 @@ const OrderDetailFormComp = ({ selectedProducts, onBack, clearSelectedProducts }
           Volver
         </button>
       </form>
-    </section>                                                                      
+    </section>
   );
 };
 
+// PropTypes para validar las props recibidas
 OrderDetailFormComp.propTypes = {
   selectedProducts: PropTypes.arrayOf(
     PropTypes.shape({
