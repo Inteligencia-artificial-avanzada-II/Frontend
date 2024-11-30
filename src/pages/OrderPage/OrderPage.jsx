@@ -5,20 +5,29 @@ import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 import { getEnvironmentURL } from "../../utils/getUrl";
 
+
+/**
+ * Componente principal para la página de pedidos.
+ * Permite buscar, seleccionar productos, gestionar un carrito de compras, y continuar con el detalle del pedido.
+ */
 const OrderPage = () => {
   const [productos, setProductos] = useState([]);
   const [filteredProductos, setFilteredProductos] = useState([]); // Productos filtrados
   const [searchTerm, setSearchTerm] = useState(""); // Término de búsqueda
-  const [orderVisible, setOrderVisible] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [isOrderDetailVisible, setIsOrderDetailVisible] = useState(false);
-  const [cantidad, setCantidad] = useState({});
+  const [orderVisible, setOrderVisible] = useState(false); // Visibilidad de los productos
+  const [selectedProducts, setSelectedProducts] = useState([]); // Selección de cada uno de ellos mediante el boton
+  const [isOrderDetailVisible, setIsOrderDetailVisible] = useState(false); // Visibilidad del formulario de detalles del pedido.
+  const [cantidad, setCantidad] = useState({}); // Cantidad por producto.
 
+  /**
+   * useEffect inicial para cargar los datos de productos desde la API.
+   */
   useEffect(() => {
     // Cargar productos desde la API
     fetch(`${getEnvironmentURL()}/inventariofabrica/consultarTodos`)
       .then((response) => response.json())
       .then((data) => {
+        // Agrupa los productos según su botana y estructura sus opciones.
         const groupedProducts = Object.values(
           data.reduce((acc, product) => {
             if (!acc[product.botana]) {
@@ -43,6 +52,11 @@ const OrderPage = () => {
       });
   }, []);
 
+  /**
+   * Filtra los productos según el término ingresado en la barra de búsqueda.
+   *  Evento de cambio en el input.
+   */
+
   const handleSearchChange = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -53,12 +67,22 @@ const OrderPage = () => {
       );
       setFilteredProductos(filtered);
     } else {
-      setFilteredProductos(productos); // Mostrar todos si no hay búsqueda
+      setFilteredProductos(productos); // Muestra todos si no hay búsqueda
     }
   };
 
+
+   /**
+   * Agrega un producto al carrito después de validar las opciones seleccionadas.
+   * - Nombre de la botana.
+   * - ID de la opción seleccionada.
+   * - Descripción de la opción seleccionada.
+   */
+
   const handleAddToOrder = (botana, selectedOptionId, selectedDescription) => {
     const cantidadSeleccionada = cantidad[botana] || 1;
+
+    // Se hace uso de Toastify para notificar al usuario que el producto no ha sido agregado
 
     if (!selectedDescription || !selectedOptionId || cantidadSeleccionada <= 0) {
       Toastify({
@@ -73,11 +97,14 @@ const OrderPage = () => {
       return;
     }
 
+    // Verifica si el producto ya está en el carrito.
+
     const stringOptionId = selectedOptionId.toString();
 
     const productInOrder = selectedProducts.find((p) => p.id === stringOptionId);
 
     if (productInOrder) {
+      // Si ya está en el carrito, actualiza la cantidad.
       const updatedOrder = selectedProducts.map((p) =>
         p.id === stringOptionId
           ? { ...p, cantidadAgregada: p.cantidadAgregada + cantidadSeleccionada }
@@ -85,6 +112,7 @@ const OrderPage = () => {
       );
       setSelectedProducts(updatedOrder);
     } else {
+      // Agrega el producto al carrito si no está.
       const productData = productos.find((producto) => producto.botana === botana);
 
       if (!productData) {
@@ -104,6 +132,8 @@ const OrderPage = () => {
       ]);
     }
 
+    // Resetea las opciones seleccionadas y la cantidad.
+
     setProductos((prevProductos) =>
       prevProductos.map((producto) =>
         producto.botana === botana
@@ -112,6 +142,8 @@ const OrderPage = () => {
       )
     );
     setCantidad((prevCantidad) => ({ ...prevCantidad, [botana]: 1 }));
+
+    // Se hace uso de Toastify para notificar al usuario que el producto no ha sido agregado
 
     Toastify({
       text: "Producto agregado",
@@ -126,6 +158,13 @@ const OrderPage = () => {
       },
     }).showToast();
   };
+
+  /**
+   * Maneja el cambio de opción seleccionada en el dropdown.
+   * - Nombre de la botana.
+   * - Valor seleccionado.
+   * - ID de la opción seleccionada.
+   */
 
   const handleDropdownChange = (botana, value, optionId) => {
     setProductos((prevProductos) =>
@@ -144,27 +183,45 @@ const OrderPage = () => {
     );
   };
 
+  /**
+   * Actualiza la cantidad seleccionada para un producto.
+   * - Nombre de la botana.
+   * - Nueva cantidad seleccionada.
+   */
+
   const handleQuantityChange = (botana, value) => {
     setCantidad((prevCantidad) => ({ ...prevCantidad, [botana]: parseInt(value, 10) || 1 }));
   };
+
+
+    /**
+   * Limpia el carrito y oculta la sección del pedido.
+   */
 
   const handleCancelOrder = () => {
     setSelectedProducts([]);
     setOrderVisible(false);
   };
 
+  // Continúa hacia el detalle del pedido.
+
   const handleContinueOrder = () => {
     setIsOrderDetailVisible(true);
   };
 
+  //Alterna la visibilidad del carrito
   const toggleOrderVisibility = () => {
     setOrderVisible(!orderVisible);
   };
+
+  // Limpia los productos seleccionados y cierra el formulario de detalles del pedido.
 
   const clearSelectedProducts = () => {
     setSelectedProducts([]);
     setIsOrderDetailVisible(false);
   };
+
+  // Se hace el diseño de como estara estructurado dentro de nuestro front
 
   return (
     <div className="container-fluid">

@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import styles from "../../styles/styles-historico.module.scss";
 import { getEnvironmentURL } from "../../utils/getUrl";
 
+
+/**
+ * Componente principal de la página histórica.
+ * Se encarga de mostrar un histórico de pedidos con filtros, tabla de datos y detalles de cada registro.
+ */
+
 const HistoricPage = () => {
+  // Estados para almacenar los datos necesarios en la página.
   const [filtros, setFiltros] = useState({
     fechaInicio: "",
     cedis: "",
@@ -10,16 +17,21 @@ const HistoricPage = () => {
     vehiculo: "",
   });
 
-  const [detalle, setDetalle] = useState(null);
-  const [cedisData, setCedisData] = useState([]);
-  const [contenedoresData, setContenedoresData] = useState([]);
-  const [vehiculosData, setVehiculosData] = useState([]);
-  const [historicoData, setHistoricoData] = useState([]);
+  const [detalle, setDetalle] = useState(null); // Estado para el detalle seleccionado
+  const [cedisData, setCedisData] = useState([]); // Lista de CEDIS disponibles.
+  const [contenedoresData, setContenedoresData] = useState([]); // Lista de contenedores disponibles.
+  const [vehiculosData, setVehiculosData] = useState([]); // Lista de vehículos disponibles.
+  const [historicoData, setHistoricoData] = useState([]); // Datos del histórico filtrados.
 
-  const apiUrlCedis = `${getEnvironmentURL()}/cedis`;
+  // URLs de las APIs para obtener datos.
+  const apiUrlCedis = `${getEnvironmentURL()}/cedis`; 
   const apiUrlContenedor = `${getEnvironmentURL()}/contenedor`;
   const apiUrlCamion = `${getEnvironmentURL()}/camion`;
   const apiGetUrl = `${getEnvironmentURL()}/orden/consultarConFiltros`;
+
+  /**
+   * Efecto inicial que carga los datos base de la página al montar el componente.
+   */
 
   useEffect(() => {
     fetchInitialData();
@@ -27,6 +39,10 @@ const HistoricPage = () => {
     fetchContenedores();
     fetchVehiculos();
   }, []);
+
+  /**
+   * Obtiene y procesa los datos iniciales para mostrar en el histórico tanto de Cedis, contenedores, vehiculos.
+   */
 
   const fetchInitialData = async () => {
     try {
@@ -40,6 +56,8 @@ const HistoricPage = () => {
     }
   };
 
+  // Se manda a llamar a la API, junto con el token para obtener la información
+
   const fetchCedis = async () => {
     try {
       const response = await fetch(`${apiUrlCedis}/consultarTodos`, {
@@ -52,6 +70,7 @@ const HistoricPage = () => {
     }
   };
 
+  // Se manda a llamar a la API, junto con el token para obtener la información
   const fetchContenedores = async () => {
     try {
       const response = await fetch(`${apiUrlContenedor}/consultarTodos`, {
@@ -64,6 +83,8 @@ const HistoricPage = () => {
     }
   };
 
+  // Se manda a llamar a la API, junto con el token para obtener la información
+
   const fetchVehiculos = async () => {
     try {
       const response = await fetch(`${apiUrlCamion}/disponibles`, {
@@ -75,6 +96,12 @@ const HistoricPage = () => {
       console.error("Error al obtener vehículos:", error);
     }
   };
+
+  /**
+   * Procesa los datos obtenidos de la API, formateando fechas y estructuras anidadas.
+   *  - Datos crudos de la API.
+   *  - Datos procesados y listos para mostrar.
+   */
 
   const processApiData = (data) => {
     return data
@@ -93,6 +120,13 @@ const HistoricPage = () => {
       }));
   };
 
+
+  /**
+   * Formatea una cadena de fecha a formato dd/mm/aaaa.
+   * - Fecha en formato ISO.
+   * - Fecha formateada.
+   */
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -101,10 +135,19 @@ const HistoricPage = () => {
     return `${day}/${month}/${year}`;
   };
 
+  /**
+   * Cambia los valores de los filtros aplicados en la interfaz.
+   *  Evento de cambio en el input.
+   */
+
   const handleFiltroChange = (e) => {
     const { name, value } = e.target;
     setFiltros((prev) => ({ ...prev, [name]: value }));
   };
+
+   /**
+   * Aplica los filtros seleccionados en el formulario para consultar datos en la API.
+   */
 
   const aplicarFiltros = async () => {
     try {
@@ -116,9 +159,13 @@ const HistoricPage = () => {
         params.append("startDate", startDate);
         params.append("endDate", endDate.toISOString());
       }
+
+      // Aqui se hace la selección de los filtros
       if (filtros.cedis) params.append("idCedis", filtros.cedis);
       if (filtros.contenedor) params.append("idContenedor", filtros.contenedor);
       if (filtros.vehiculo) params.append("idCamion", filtros.vehiculo);
+
+      // Se hacen consultas a la API, para conocer si existe dicha información
 
       const response = await fetch(`${apiGetUrl}?${params.toString()}`, {
         headers: { Authorization: `Token ${localStorage.getItem("token")}` },
@@ -134,6 +181,10 @@ const HistoricPage = () => {
     }
   };
 
+
+  /**
+   * Limpia los filtros aplicados y vuelve a cargar los datos iniciales.
+   */
   const limpiarFiltros = () => {
     setFiltros({
       fechaInicio: "",
@@ -144,6 +195,8 @@ const HistoricPage = () => {
     fetchInitialData();
   };
 
+
+  // Muestra el detalle de un registro específico en un modal
   const abrirDetalle = (detalle) => {
     document.body.style.overflow = "hidden"; // Bloquear scroll
     document.body.style.position = "fixed";
@@ -151,6 +204,7 @@ const HistoricPage = () => {
     setDetalle(detalle);
   };
   
+  //Cierra el modal de detalle y restaura el estado de la página.
   const cerrarDetalle = () => {
     document.body.style.overflow = ""; // Restaurar scroll
     document.body.style.position = "";
@@ -158,6 +212,7 @@ const HistoricPage = () => {
     setDetalle(null);
   };
   
+  // Aqui se hace para mostrar el funcionamiento dentro de producción como la interacción del usuario.
   return (
     <div className={styles.container}>
       <h2 className={styles.titulo}>Histórico de Pedidos</h2>

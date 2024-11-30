@@ -3,11 +3,19 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import styles from "../../styles/styles-reporte.module.scss";
 
+
+/**
+ * Componente principal para gestionar y generar reportes de contenedores.
+ * Incluye funcionalidades para descargar reportes en PDF y visualizar detalles de cada contenedor.
+ */
 const Reportes = () => {
   const [contenedores, setContenedores] = useState([]);
   const [detalle, setDetalle] = useState(null);
 
-  // Datos simulados
+   /**
+   * Simula la obtención de datos desde una API con datos dummy.
+   * Realiza un retraso artificial de 1 segundo antes de establecer los datos.
+   */
   const fetchContenedores = async () => {
     const dummyData = [
       {
@@ -122,15 +130,24 @@ const Reportes = () => {
     setContenedores(dummyData);
   };
   
-
+// Llama a la función `fetchContenedores` al cargar el componente.
   useEffect(() => {
     fetchContenedores();
   }, []);
+
+
+    /**
+   * Formatea una fecha en formato legible (dd/mm/aaaa).
+   * - Fecha en formato ISO.
+   * - Fecha formateada.
+   */
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString();
   };
+
+  // Genera y descarga un PDF con un resumen histórico de todos los contenedores.
 
   const descargarPDFHistorico = () => {
     const doc = new jsPDF();
@@ -209,7 +226,10 @@ const Reportes = () => {
     doc.save("HistoricoContenedores.pdf");
   };
   
-
+  /**
+   * Genera y descarga un PDF con los detalles de un contenedor específico.
+   * - Contenedor seleccionado.
+   */
   const descargarPDFContenedor = (contenedor) => {
     const doc = new jsPDF();
   
@@ -294,12 +314,16 @@ const Reportes = () => {
   };
   
   
-
+   /**
+   * Muestra el detalle de un contenedor en un modal.
+   * - Contenedor seleccionado.
+   */
   const abrirDetalle = (contenedor) => {
     document.body.style.overflow = "hidden"; // Desactiva el scroll del fondo
     setDetalle(contenedor);
   };
   
+  // Se cierra el modal del detalle
   const cerrarDetalle = () => {
     document.body.style.overflow = "auto"; // Reactiva el scroll del fondo
     setDetalle(null);

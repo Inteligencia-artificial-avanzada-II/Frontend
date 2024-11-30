@@ -23,7 +23,7 @@ import OrderPage from "../pages/OrderPage/OrderPage";
 
 import styles from "../styles/styles-approuter.module.scss"; // Para los estilos CSS
 import HistoricPage from "../pages/HistoricoPage/HistoricPage";
-import HistoricoAdmin from "../pages/HistoricoPageAdmin/HistoricoAdmin"; // Importa el nuevo componente
+
 import Reportes from "../pages/ReportesAdmin/Reportes";
 
 // Maneja todas las rutas de la aplicación, incluyendo rutas públicas, protegidas y la estructura de layout.
@@ -119,16 +119,6 @@ const AppRouter = () => {
                 element={
                   <ProtectedRoute allowedRoles={["Orden"]}>
                     <HistoricPage />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Ruta protegida: Histórico para Administradores */}
-              <Route
-                path="/historicoadmin"
-                element={
-                  <ProtectedRoute allowedRoles={["Admin"]}>
-                    <HistoricoAdmin />
                   </ProtectedRoute>
                 }
               />
